@@ -30,7 +30,7 @@ class ServiceListenerFactoryTest extends TestCase
                  ->will($this->returnValue(['service_listener_options' => 'string']));
 
         $this->expectException(ServiceNotCreatedException::class);
-        $this->expectExceptionMessage("The value of service_listener_options must be an array, string given.");
+        $this->expectExceptionMessage('The value of service_listener_options must be an array, string given.');
 
         $this->factory->__invoke($this->sm, 'ServiceListener');
     }
@@ -122,7 +122,7 @@ class ServiceListenerFactoryTest extends TestCase
                  ->method('get')
                  ->will($this->returnValue($config));
 
-        $this->expectExceptionMessage("Invalid service listener options detected, 0 array must contain interface key.");
+        $this->expectExceptionMessage('Invalid service listener options detected, 0 array must contain interface key.');
         $this->expectException(ServiceNotCreatedException::class);
 
         $this->factory->__invoke($this->sm, 'ServiceListener');
@@ -159,7 +159,7 @@ class ServiceListenerFactoryTest extends TestCase
                  ->will($this->returnValue($config));
 
         $this->expectException(ServiceNotCreatedException::class);
-        $this->expectExceptionMessage("Invalid service listener options detected, 0 array must contain method key.");
+        $this->expectExceptionMessage('Invalid service listener options detected, 0 array must contain method key.');
 
         $this->factory->__invoke($this->sm, 'ServiceListener');
     }

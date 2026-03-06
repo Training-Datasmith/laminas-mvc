@@ -1,21 +1,27 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Laminas\Mvc\Service;
 
 // phpcs:ignore
+use function get_debug_type;
+use function gettype;
+
 use Interop\Container\ContainerInterface;
+
+use function is_array;
+use function is_string;
+
 use Laminas\ModuleManager\Listener\ServiceListener;
 use Laminas\ModuleManager\Listener\ServiceListenerInterface;
 use Laminas\Mvc;
+
 use Laminas\ServiceManager\Exception\ServiceNotCreatedException;
 use Laminas\ServiceManager\Factory\FactoryInterface;
 use Laminas\ServiceManager\Factory\InvokableFactory;
 use Laminas\View;
 
-use function get_debug_type;
-use function gettype;
-use function is_array;
-use function is_string;
 use function sprintf;
 
 class ServiceListenerFactory implements FactoryInterface

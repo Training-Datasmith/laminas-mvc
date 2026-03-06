@@ -8,10 +8,12 @@ use Laminas\Http\PhpEnvironment\Response;
 use Laminas\Mvc\ResponseSender\PhpEnvironmentResponseSender;
 use Laminas\Mvc\ResponseSender\SendResponseEvent;
 use Laminas\Stdlib\ResponseInterface;
-use PHPUnit\Framework\TestCase;
 
 use function ob_get_clean;
+
 use function ob_start;
+
+use PHPUnit\Framework\TestCase;
 
 class PhpEnvironmentResponseSenderTest extends TestCase
 {

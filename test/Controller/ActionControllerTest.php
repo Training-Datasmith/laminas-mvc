@@ -21,9 +21,11 @@ use Laminas\Stdlib\DispatchableInterface;
 use Laminas\View\Model\ModelInterface;
 use LaminasTest\Mvc\Controller\TestAsset\SampleController;
 use LaminasTest\Mvc\Controller\TestAsset\SampleInterface;
-use PHPUnit\Framework\TestCase;
 
 use function method_exists;
+
+use PHPUnit\Framework\TestCase;
+
 use function var_export;
 
 class ActionControllerTest extends TestCase
@@ -103,7 +105,7 @@ class ActionControllerTest extends TestCase
         $response->setContent('short circuited!');
         $this->controller->getEventManager()->attach(
             MvcEvent::EVENT_DISPATCH,
-            static fn($e): Response => $response,
+            static fn ($e): Response => $response,
             100
         );
         $result = $this->controller->dispatch($this->request, $this->response);
@@ -116,7 +118,7 @@ class ActionControllerTest extends TestCase
         $response->setContent('short circuited!');
         $this->controller->getEventManager()->attach(
             MvcEvent::EVENT_DISPATCH,
-            static fn($e): Response => $response,
+            static fn ($e): Response => $response,
             -10
         );
         $result = $this->controller->dispatch($this->request, $this->response);
@@ -131,7 +133,7 @@ class ActionControllerTest extends TestCase
         $sharedEvents->attach(
             DispatchableInterface::class,
             MvcEvent::EVENT_DISPATCH,
-            static fn($e): Response => $response,
+            static fn ($e): Response => $response,
             10
         );
         $result = $this->controller->dispatch($this->request, $this->response);
@@ -146,7 +148,7 @@ class ActionControllerTest extends TestCase
         $sharedEvents->attach(
             AbstractActionController::class,
             MvcEvent::EVENT_DISPATCH,
-            static fn($e): Response => $response,
+            static fn ($e): Response => $response,
             10
         );
         $result = $this->controller->dispatch($this->request, $this->response);
@@ -161,7 +163,7 @@ class ActionControllerTest extends TestCase
         $sharedEvents->attach(
             $this->controller::class,
             MvcEvent::EVENT_DISPATCH,
-            static fn($e): Response => $response,
+            static fn ($e): Response => $response,
             10
         );
         $result = $this->controller->dispatch($this->request, $this->response);
@@ -176,7 +178,7 @@ class ActionControllerTest extends TestCase
         $sharedEvents->attach(
             SampleInterface::class,
             MvcEvent::EVENT_DISPATCH,
-            static fn($e): Response => $response,
+            static fn ($e): Response => $response,
             10
         );
         $result = $this->controller->dispatch($this->request, $this->response);

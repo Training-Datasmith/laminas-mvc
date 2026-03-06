@@ -70,10 +70,10 @@ class ForwardTest extends TestCase
                         ],
                     ]);
                 },
-                'ControllerPluginManager' => static fn($services, $name): PluginManager => new PluginManager($services),
-                'EventManager'            => fn($services, $name): EventManager =>
+                'ControllerPluginManager' => static fn ($services, $name): PluginManager => new PluginManager($services),
+                'EventManager'            => fn ($services, $name): EventManager =>
                     $this->createEventManager($services->get('SharedEventManager')),
-                'SharedEventManager'      => static fn($services, $name): SharedEventManager =>
+                'SharedEventManager'      => static fn ($services, $name): SharedEventManager =>
                 new SharedEventManager(),
             ],
             'shared'    => [
@@ -117,7 +117,7 @@ class ForwardTest extends TestCase
 
     public function testDispatchRaisesDomainExceptionIfDiscoveredControllerIsNotDispatchable(): void
     {
-        $this->controllers->setFactory('bogus', static fn(): stdClass => new stdClass());
+        $this->controllers->setFactory('bogus', static fn (): stdClass => new stdClass());
         $plugin = new ForwardPlugin($this->controllers);
         $plugin->setController($this->controller);
 
@@ -153,10 +153,10 @@ class ForwardTest extends TestCase
                         ],
                     ]);
                 },
-                'ControllerPluginManager' => static fn($services): PluginManager => new PluginManager($services),
-                'EventManager'            => fn($services, $name): EventManager =>
+                'ControllerPluginManager' => static fn ($services): PluginManager => new PluginManager($services),
+                'EventManager'            => fn ($services, $name): EventManager =>
                     $this->createEventManager($services->get('SharedEventManager')),
-                'SharedEventManager'      => static fn($services, $name): SharedEventManager =>
+                'SharedEventManager'      => static fn ($services, $name): SharedEventManager =>
                 new SharedEventManager(),
             ],
             'shared'    => [
@@ -193,8 +193,8 @@ class ForwardTest extends TestCase
         $sharedEvents = $this->createMock(SharedEventManagerInterface::class);
         // @codingStandardsIgnoreStart
         $sharedEvents->expects($this->any())->method('getListeners')->will($this->returnValue([
-            static function ($e) : void {
-            }
+            static function ($e): void {
+            },
         ]));
         // @codingStandardsIgnoreEnd
         $events      = $this->createEventManager($sharedEvents);

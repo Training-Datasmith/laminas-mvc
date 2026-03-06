@@ -4,6 +4,10 @@ declare(strict_types=1);
 
 namespace LaminasTest\Mvc\Controller;
 
+use function explode;
+use function http_build_query;
+use function json_encode;
+
 use Laminas\EventManager\EventManager;
 use Laminas\EventManager\SharedEventManager;
 use Laminas\EventManager\SharedEventManagerInterface;
@@ -18,15 +22,16 @@ use LaminasTest\Mvc\Controller\TestAsset\Request;
 use LaminasTest\Mvc\Controller\TestAsset\RestfulContentTypeTestController;
 use LaminasTest\Mvc\Controller\TestAsset\RestfulMethodNotAllowedTestController;
 use LaminasTest\Mvc\Controller\TestAsset\RestfulTestController;
+
+use function method_exists;
+
 use PHPUnit\Framework\TestCase;
 use ReflectionObject;
+
+use function sort;
+
 use stdClass;
 
-use function explode;
-use function http_build_query;
-use function json_encode;
-use function method_exists;
-use function sort;
 use function uniqid;
 
 class RestfulControllerTest extends TestCase
@@ -101,7 +106,7 @@ class RestfulControllerTest extends TestCase
 
     public function testCanReceiveStringAsRequestContent(): void
     {
-        $string = "any content";
+        $string = 'any content';
         $this->request->setMethod('PUT');
         $this->request->setContent($string);
         $this->routeMatch->setParam('id', $id = 1);
@@ -318,7 +323,7 @@ class RestfulControllerTest extends TestCase
         $response->setContent('short circuited!');
         $this->controller->getEventManager()->attach(
             MvcEvent::EVENT_DISPATCH,
-            static fn($e): Response => $response,
+            static fn ($e): Response => $response,
             10
         );
         $result = $this->controller->dispatch($this->request, $this->response);
@@ -331,7 +336,7 @@ class RestfulControllerTest extends TestCase
         $response->setContent('short circuited!');
         $this->controller->getEventManager()->attach(
             MvcEvent::EVENT_DISPATCH,
-            static fn($e): Response => $response,
+            static fn ($e): Response => $response,
             -10
         );
         $result = $this->controller->dispatch($this->request, $this->response);
@@ -345,7 +350,7 @@ class RestfulControllerTest extends TestCase
         $this->sharedEvents->attach(
             DispatchableInterface::class,
             MvcEvent::EVENT_DISPATCH,
-            static fn($e): Response => $response,
+            static fn ($e): Response => $response,
             10
         );
         $result = $this->controller->dispatch($this->request, $this->response);
@@ -359,7 +364,7 @@ class RestfulControllerTest extends TestCase
         $this->sharedEvents->attach(
             AbstractRestfulController::class,
             MvcEvent::EVENT_DISPATCH,
-            static fn($e): Response => $response,
+            static fn ($e): Response => $response,
             10
         );
         $result = $this->controller->dispatch($this->request, $this->response);
@@ -373,7 +378,7 @@ class RestfulControllerTest extends TestCase
         $this->sharedEvents->attach(
             $this->controller::class,
             MvcEvent::EVENT_DISPATCH,
-            static fn($e): Response => $response,
+            static fn ($e): Response => $response,
             10
         );
         $result = $this->controller->dispatch($this->request, $this->response);

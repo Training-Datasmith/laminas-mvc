@@ -4,16 +4,17 @@ declare(strict_types=1);
 
 namespace LaminasTest\Mvc\View;
 
+use function count;
+use function gettype;
+
 use Laminas\EventManager\EventManager;
 use Laminas\EventManager\Test\EventListenerIntrospectionTrait;
 use Laminas\Mvc\MvcEvent;
 use Laminas\Mvc\View\Http\CreateViewModelListener;
 use Laminas\View\Model\ViewModel;
+
 use PHPUnit\Framework\TestCase;
 use stdClass;
-
-use function count;
-use function gettype;
 
 class CreateViewModelListenerTest extends TestCase
 {

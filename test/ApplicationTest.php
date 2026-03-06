@@ -4,6 +4,11 @@ declare(strict_types=1);
 
 namespace LaminasTest\Mvc;
 
+use function array_reduce;
+use function array_shift;
+use function array_values;
+use function is_array;
+
 use Laminas\EventManager\EventManager;
 use Laminas\EventManager\SharedEventManager;
 use Laminas\EventManager\Test\EventListenerIntrospectionTrait;
@@ -32,16 +37,15 @@ use LaminasTest\Mvc\TestAsset\MockSendResponseListener;
 use LaminasTest\Mvc\TestAsset\MockViewManager;
 use LaminasTest\Mvc\TestAsset\PathController;
 use LaminasTest\Mvc\TestAsset\StubBootstrapListener;
+
 use PHPUnit\Framework\TestCase;
 use ReflectionMethod;
 use ReflectionProperty;
+
+use function sprintf;
+
 use stdClass;
 
-use function array_reduce;
-use function array_shift;
-use function array_values;
-use function is_array;
-use function sprintf;
 use function var_export;
 
 class ApplicationTest extends TestCase
@@ -273,10 +277,10 @@ class ApplicationTest extends TestCase
         $this->serviceManager->setService('Router', $router);
 
         if ($addService) {
-            $this->services->addFactory('ControllerManager', static fn($services): ControllerManager =>
+            $this->services->addFactory('ControllerManager', static fn ($services): ControllerManager =>
                 new ControllerManager($services, [
                     'factories' => [
-                        'path' => static fn(): PathController => new PathController(),
+                        'path' => static fn (): PathController => new PathController(),
                     ],
                 ]));
         }
@@ -300,10 +304,10 @@ class ApplicationTest extends TestCase
         ]);
         $router->addRoute('sample', $route);
 
-        $this->serviceManager->setFactory('ControllerManager', static fn($services): ControllerManager =>
+        $this->serviceManager->setFactory('ControllerManager', static fn ($services): ControllerManager =>
             new ControllerManager($services, [
                 'factories' => [
-                    'sample' => static fn(): SampleController => new SampleController(),
+                    'sample' => static fn (): SampleController => new SampleController(),
                 ],
             ]));
 
@@ -327,10 +331,10 @@ class ApplicationTest extends TestCase
         $router->addRoute('bad', $route);
 
         if ($addService) {
-            $this->serviceManager->setFactory('ControllerManager', static fn($services): ControllerManager =>
+            $this->serviceManager->setFactory('ControllerManager', static fn ($services): ControllerManager =>
                 new ControllerManager($services, [
                     'factories' => [
-                        'bad' => static fn(): BadController => new BadController(),
+                        'bad' => static fn (): BadController => new BadController(),
                     ],
                 ]));
         }
@@ -342,7 +346,7 @@ class ApplicationTest extends TestCase
     public function testFinishEventIsTriggeredAfterDispatching(): void
     {
         $application = $this->setupActionController();
-        $application->getEventManager()->attach(MvcEvent::EVENT_FINISH, static fn($e) =>
+        $application->getEventManager()->attach(MvcEvent::EVENT_FINISH, static fn ($e) =>
             $e->getResponse()->setContent($e->getResponse()->getBody() . 'foobar'));
         $application->run();
         $this->assertStringContainsString(
@@ -366,7 +370,7 @@ class ApplicationTest extends TestCase
         $events   = $application->getEventManager();
         $events->attach(MvcEvent::EVENT_DISPATCH_ERROR, static function ($e) use ($response) {
             $error = $e->getError();
-            $response->setContent("Code: " . $error);
+            $response->setContent('Code: ' . $error);
             return $response;
         });
 
@@ -383,7 +387,7 @@ class ApplicationTest extends TestCase
         $application      = $this->setupPathController(false);
         $controllerLoader = $application->getServiceManager()->get('ControllerManager');
         $response         = new Response();
-        $application->getEventManager()->attach(MvcEvent::EVENT_DISPATCH_ERROR, static fn($e): Response => $response);
+        $application->getEventManager()->attach(MvcEvent::EVENT_DISPATCH_ERROR, static fn ($e): Response => $response);
 
         $result = $application->run();
         $this->assertSame($application, $result, $result::class);
@@ -423,7 +427,7 @@ class ApplicationTest extends TestCase
         $events   = $application->getEventManager();
         $events->attach(MvcEvent::EVENT_DISPATCH_ERROR, static function ($e) use ($response) {
             $error = $e->getError();
-            $response->setContent("Code: " . $error);
+            $response->setContent('Code: ' . $error);
             return $response;
         });
 
@@ -440,7 +444,7 @@ class ApplicationTest extends TestCase
         $this->application->bootstrap();
         $response = $this->application->getResponse();
         $events   = $this->application->getEventManager();
-        $events->attach(MvcEvent::EVENT_ROUTE, static fn($e): ResponseInterface => $response, 100);
+        $events->attach(MvcEvent::EVENT_ROUTE, static fn ($e): ResponseInterface => $response, 100);
 
         $token = new stdClass();
         $events->attach(MvcEvent::EVENT_FINISH, static function ($e) use ($token): void {
@@ -461,7 +465,7 @@ class ApplicationTest extends TestCase
         $response = $this->application->getResponse();
         $events   = $this->application->getEventManager();
         $events->clearListeners(MvcEvent::EVENT_ROUTE);
-        $events->attach(MvcEvent::EVENT_DISPATCH, static fn($e): ResponseInterface => $response, 100);
+        $events->attach(MvcEvent::EVENT_DISPATCH, static fn ($e): ResponseInterface => $response, 100);
 
         $token = new stdClass();
         $events->attach(MvcEvent::EVENT_FINISH, static function ($e) use ($token): void {
@@ -480,7 +484,7 @@ class ApplicationTest extends TestCase
         $events   = $application->getEventManager();
         $response = $application->getResponse();
         $events->attach(MvcEvent::EVENT_FINISH, static function ($e) use ($response) {
-            $response->setContent("EventClass: " . $e->getTarget()::class);
+            $response->setContent('EventClass: ' . $e->getTarget()::class);
             return $response;
         });
 

@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace LaminasTest\Mvc\View;
 
+use function count;
+
 use Laminas\EventManager\EventManager;
 use Laminas\EventManager\Test\EventListenerIntrospectionTrait;
 use Laminas\Mvc\ModuleRouteListener;
@@ -12,9 +14,8 @@ use Laminas\Mvc\View\Http\InjectTemplateListener;
 use Laminas\Router\RouteMatch;
 use Laminas\View\Model\ViewModel;
 use LaminasTest\Mvc\Controller\TestAsset\SampleController;
-use PHPUnit\Framework\TestCase;
 
-use function count;
+use PHPUnit\Framework\TestCase;
 
 class InjectTemplateListenerTest extends TestCase
 {

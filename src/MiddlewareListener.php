@@ -1,28 +1,35 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Laminas\Mvc;
 
-use Exception;
+use const E_USER_DEPRECATED;
+
 // phpcs:ignore
+use Exception;
 use Interop\Container\ContainerInterface;
 use Interop\Http\ServerMiddleware\MiddlewareInterface;
+
+use function is_array;
+use function is_callable;
+use function is_string;
+
 use Laminas\EventManager\AbstractListenerAggregate;
 use Laminas\EventManager\EventManagerInterface;
 use Laminas\Mvc\Controller\MiddlewareController;
 use Laminas\Mvc\Exception\InvalidMiddlewareException;
 use Laminas\Psr7Bridge\Psr7Response;
+
 use Laminas\Stratigility\MiddlewarePipe;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ResponseInterface as PsrResponseInterface;
+
+use function sprintf;
+
 use Throwable;
 
-use function is_array;
-use function is_callable;
-use function is_string;
-use function sprintf;
 use function trigger_error;
-
-use const E_USER_DEPRECATED;
 
 /**
  * @deprecated Since 3.2.0

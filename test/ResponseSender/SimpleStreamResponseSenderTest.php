@@ -4,16 +4,19 @@ declare(strict_types=1);
 
 namespace LaminasTest\Mvc\ResponseSender;
 
+use function file_get_contents;
+use function fopen;
+
 use Laminas\Http\Response\Stream;
 use Laminas\Mvc\ResponseSender\SendResponseEvent;
 use Laminas\Mvc\ResponseSender\SimpleStreamResponseSender;
-use Laminas\Stdlib\ResponseInterface;
-use PHPUnit\Framework\TestCase;
 
-use function file_get_contents;
-use function fopen;
+use Laminas\Stdlib\ResponseInterface;
+
 use function ob_get_clean;
 use function ob_start;
+
+use PHPUnit\Framework\TestCase;
 
 class SimpleStreamResponseSenderTest extends TestCase
 {

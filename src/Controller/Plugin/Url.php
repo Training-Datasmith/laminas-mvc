@@ -1,22 +1,25 @@
 <?php
 
-namespace Laminas\Mvc\Controller\Plugin;
+declare(strict_types=1);
 
-use Laminas\EventManager\EventInterface;
-use Laminas\Mvc\Exception\DomainException;
-use Laminas\Mvc\Exception\InvalidArgumentException;
-use Laminas\Mvc\Exception\RuntimeException;
-use Laminas\Mvc\InjectApplicationEventInterface;
-use Laminas\Mvc\ModuleRouteListener;
-use Laminas\Mvc\MvcEvent;
-use Laminas\Router\RouteStackInterface;
-use Traversable;
+namespace Laminas\Mvc\Controller\Plugin;
 
 use function array_merge;
 use function func_num_args;
 use function is_array;
 use function is_bool;
 use function iterator_to_array;
+
+use Laminas\EventManager\EventInterface;
+use Laminas\Mvc\Exception\DomainException;
+use Laminas\Mvc\Exception\InvalidArgumentException;
+use Laminas\Mvc\Exception\RuntimeException;
+
+use Laminas\Mvc\InjectApplicationEventInterface;
+use Laminas\Mvc\ModuleRouteListener;
+use Laminas\Mvc\MvcEvent;
+use Laminas\Router\RouteStackInterface;
+use Traversable;
 
 class Url extends AbstractPlugin
 {

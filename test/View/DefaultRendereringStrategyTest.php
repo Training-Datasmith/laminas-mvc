@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace LaminasTest\Mvc\View;
 
+use function json_encode;
+
 use Laminas\EventManager\EventManager;
 use Laminas\EventManager\SharedEventManager;
 use Laminas\EventManager\Test\EventListenerIntrospectionTrait;
@@ -20,9 +22,9 @@ use Laminas\View\Resolver\TemplateMapResolver;
 use Laminas\View\Strategy\PhpRendererStrategy;
 use Laminas\View\View;
 use LaminasTest\Mvc\View\TestAsset\DumbStrategy;
+
 use PHPUnit\Framework\TestCase;
 
-use function json_encode;
 use function sprintf;
 
 class DefaultRendereringStrategyTest extends TestCase
@@ -82,7 +84,7 @@ class DefaultRendereringStrategyTest extends TestCase
     public function testWillRenderAlternateStrategyWhenSelected(): void
     {
         $renderer = new DumbStrategy();
-        $this->view->addRenderingStrategy(static fn($e): DumbStrategy => $renderer, 100);
+        $this->view->addRenderingStrategy(static fn ($e): DumbStrategy => $renderer, 100);
         $model = new ViewModel(['foo' => 'bar']);
         $model->setOption('template', 'content');
         $this->event->setResult($model);
@@ -107,7 +109,7 @@ class DefaultRendereringStrategyTest extends TestCase
     public function testBypassesRenderingIfResultIsAResponse(): void
     {
         $renderer = new DumbStrategy();
-        $this->view->addRenderingStrategy(static fn($e): DumbStrategy => $renderer, 100);
+        $this->view->addRenderingStrategy(static fn ($e): DumbStrategy => $renderer, 100);
         $model = new ViewModel(['foo' => 'bar']);
         $model->setOption('template', 'content');
         $this->event->setViewModel($model);

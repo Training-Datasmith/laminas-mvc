@@ -57,13 +57,13 @@ trait PathControllerTrait
                     'ControllerLoader' => ControllerManager::class,
                 ],
                 'factories'  => [
-                    'ControllerManager' => static fn($services): ControllerManager =>
+                    'ControllerManager' => static fn ($services): ControllerManager =>
                         new ControllerManager($services, [
                             'factories' => [
-                                'path' => static fn(): PathController => new PathController(),
+                                'path' => static fn (): PathController => new PathController(),
                             ],
                         ]),
-                    'Router'            => static fn($services) => $services->get('HttpRouter'),
+                    'Router'            => static fn ($services) => $services->get('HttpRouter'),
                 ],
                 'invokables' => [
                     'Request'              => Request::class,

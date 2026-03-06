@@ -4,6 +4,9 @@ declare(strict_types=1);
 
 namespace LaminasTest\Mvc\Service;
 
+use function array_merge_recursive;
+use function class_exists;
+
 use Exception;
 use Laminas\EventManager\SharedEventManager;
 use Laminas\Mvc\Controller\ControllerManager;
@@ -17,11 +20,9 @@ use Laminas\ServiceManager\ServiceManager;
 use LaminasTest\Mvc\Controller\Plugin\TestAsset\SamplePlugin;
 use LaminasTest\Mvc\Controller\TestAsset\SampleController;
 use LaminasTest\Mvc\Service\TestAsset\Dispatchable;
+
 use LaminasTest\Mvc\Service\TestAsset\InvalidDispatchableClass;
 use PHPUnit\Framework\TestCase;
-
-use function array_merge_recursive;
-use function class_exists;
 
 class ControllerManagerFactoryTest extends TestCase
 {

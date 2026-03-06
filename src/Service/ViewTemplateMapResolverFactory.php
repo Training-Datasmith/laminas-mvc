@@ -1,13 +1,17 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Laminas\Mvc\Service;
 
 // phpcs:ignore
 use Interop\Container\ContainerInterface;
-use Laminas\ServiceManager\Factory\FactoryInterface;
-use Laminas\View\Resolver as ViewResolver;
 
 use function is_array;
+
+use Laminas\ServiceManager\Factory\FactoryInterface;
+
+use Laminas\View\Resolver as ViewResolver;
 
 class ViewTemplateMapResolverFactory implements FactoryInterface
 {

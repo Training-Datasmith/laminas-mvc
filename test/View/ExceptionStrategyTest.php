@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace LaminasTest\Mvc\View;
 
+use function count;
+
 use Exception;
 use Laminas\EventManager\EventManager;
 use Laminas\EventManager\Test\EventListenerIntrospectionTrait;
@@ -12,9 +14,8 @@ use Laminas\Mvc\Application;
 use Laminas\Mvc\MvcEvent;
 use Laminas\Mvc\View\Http\ExceptionStrategy;
 use Laminas\View\Model\ViewModel;
-use PHPUnit\Framework\TestCase;
 
-use function count;
+use PHPUnit\Framework\TestCase;
 
 class ExceptionStrategyTest extends TestCase
 {

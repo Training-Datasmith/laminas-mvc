@@ -60,7 +60,7 @@ class ServiceManagerConfigTest extends TestCase
                 'foo' => stdClass::class,
             ],
             'factories'  => [
-                'bar' => static fn(): stdClass => new stdClass(),
+                'bar' => static fn (): stdClass => new stdClass(),
             ],
         ];
 
@@ -79,7 +79,7 @@ class ServiceManagerConfigTest extends TestCase
                 'foo' => stdClass::class,
             ],
             'factories'  => [
-                'ModuleManager' => static fn(): stdClass => new stdClass(),
+                'ModuleManager' => static fn (): stdClass => new stdClass(),
             ],
         ];
 
@@ -134,7 +134,7 @@ class ServiceManagerConfigTest extends TestCase
                 'EventManagerAwareInitializer' => $initializer,
             ],
             'factories'    => [
-                'EventManagerAware' => static fn(): MockObject => $instance,
+                'EventManagerAware' => static fn (): MockObject => $instance,
             ],
         ]);
         $serviceManager = new ServiceManager();

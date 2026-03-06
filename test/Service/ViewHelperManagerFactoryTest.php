@@ -4,6 +4,9 @@ declare(strict_types=1);
 
 namespace LaminasTest\Mvc\Service;
 
+use function array_unshift;
+use function is_callable;
+
 use Laminas\Http\PhpEnvironment\Request;
 use Laminas\Mvc\Application;
 use Laminas\Mvc\MvcEvent;
@@ -14,11 +17,10 @@ use Laminas\ServiceManager\ServiceManager;
 use Laminas\View\Helper\BasePath;
 use Laminas\View\Helper\Doctype;
 use Laminas\View\Helper\Url;
+
 use Laminas\View\HelperPluginManager;
 use PHPUnit\Framework\TestCase;
 
-use function array_unshift;
-use function is_callable;
 use function sprintf;
 
 class ViewHelperManagerFactoryTest extends TestCase

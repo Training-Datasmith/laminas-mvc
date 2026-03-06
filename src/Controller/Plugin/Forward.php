@@ -1,6 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Laminas\Mvc\Controller\Plugin;
+
+use function array_shift;
+use function get_debug_type;
+use function is_array;
+use function is_object;
 
 use Laminas\EventManager\SharedEventManagerInterface as SharedEvents;
 use Laminas\Mvc\Controller\ControllerManager;
@@ -9,16 +16,14 @@ use Laminas\Mvc\Exception\DomainException;
 use Laminas\Mvc\InjectApplicationEventInterface;
 use Laminas\Mvc\MvcEvent;
 use Laminas\Mvc\View\Http\InjectViewModelListener;
+
 use Laminas\Router\RouteMatch;
 use Laminas\Stdlib\CallbackHandler;
 use Laminas\Stdlib\DispatchableInterface;
-use Traversable;
 
-use function array_shift;
-use function get_debug_type;
-use function is_array;
-use function is_object;
 use function sprintf;
+
+use Traversable;
 
 class Forward extends AbstractPlugin
 {

@@ -1,18 +1,22 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Laminas\Mvc\Service;
 
 // phpcs:ignore
 use Interop\Container\ContainerInterface;
+
+use function is_callable;
+
 use Laminas\Router\RouteMatch;
 use Laminas\ServiceManager\Exception\ServiceNotCreatedException;
 use Laminas\View\Helper as ViewHelper;
 use Laminas\View\Helper\BasePath;
 use Laminas\View\Helper\Doctype;
 use Laminas\View\Helper\Url;
-use Laminas\View\HelperPluginManager;
 
-use function is_callable;
+use Laminas\View\HelperPluginManager;
 
 class ViewHelperManagerFactory extends AbstractPluginManagerFactory
 {

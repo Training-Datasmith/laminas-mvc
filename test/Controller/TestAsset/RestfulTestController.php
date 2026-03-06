@@ -4,13 +4,14 @@ declare(strict_types=1);
 
 namespace LaminasTest\Mvc\Controller\TestAsset;
 
-use Laminas\Http\Response;
-use Laminas\Mvc\Controller\AbstractRestfulController;
-use Laminas\Stdlib\ResponseInterface;
-use Traversable;
-
 use function array_merge;
 use function is_array;
+
+use Laminas\Http\Response;
+use Laminas\Mvc\Controller\AbstractRestfulController;
+
+use Laminas\Stdlib\ResponseInterface;
+use Traversable;
 
 class RestfulTestController extends AbstractRestfulController
 {

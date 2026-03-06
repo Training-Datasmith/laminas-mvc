@@ -1,17 +1,8 @@
 <?php
 
-namespace Laminas\Mvc\Controller;
+declare(strict_types=1);
 
-use Laminas\Http\Header\ContentType;
-use Laminas\Http\Request as HttpRequest;
-use Laminas\Mvc\Exception;
-use Laminas\Mvc\Exception\DomainException;
-use Laminas\Mvc\Exception\InvalidArgumentException;
-use Laminas\Mvc\Exception\RuntimeException;
-use Laminas\Mvc\MvcEvent;
-use Laminas\Router\RouteMatch;
-use Laminas\Stdlib\RequestInterface as Request;
-use Laminas\Stdlib\ResponseInterface as Response;
+namespace Laminas\Mvc\Controller;
 
 use function array_key_exists;
 use function array_shift;
@@ -22,6 +13,19 @@ use function get_debug_type;
 use function is_array;
 use function is_callable;
 use function json_decode;
+
+use Laminas\Http\Header\ContentType;
+
+use Laminas\Http\Request as HttpRequest;
+use Laminas\Mvc\Exception;
+use Laminas\Mvc\Exception\DomainException;
+use Laminas\Mvc\Exception\InvalidArgumentException;
+use Laminas\Mvc\Exception\RuntimeException;
+use Laminas\Mvc\MvcEvent;
+use Laminas\Router\RouteMatch;
+use Laminas\Stdlib\RequestInterface as Request;
+use Laminas\Stdlib\ResponseInterface as Response;
+
 use function method_exists;
 use function parse_str;
 use function reset;
@@ -355,7 +359,7 @@ abstract class AbstractRestfulController extends AbstractController
                 $action   = $method;
                 $return   = call_user_func($callable, $e);
                 break;
-            // DELETE
+                // DELETE
             case 'delete':
                 $id = $this->getIdentifier($routeMatch, $request);
 
@@ -370,7 +374,7 @@ abstract class AbstractRestfulController extends AbstractController
                 $action = 'deleteList';
                 $return = $this->deleteList($data);
                 break;
-            // GET
+                // GET
             case 'get':
                 $id = $this->getIdentifier($routeMatch, $request);
                 if ($id !== false) {
@@ -381,7 +385,7 @@ abstract class AbstractRestfulController extends AbstractController
                 $action = 'getList';
                 $return = $this->getList();
                 break;
-            // HEAD
+                // HEAD
             case 'head':
                 $id = $this->getIdentifier($routeMatch, $request);
                 if ($id === false) {
@@ -393,13 +397,13 @@ abstract class AbstractRestfulController extends AbstractController
                 $response->setContent('');
                 $return = $response;
                 break;
-            // OPTIONS
+                // OPTIONS
             case 'options':
                 $action = 'options';
                 $this->options();
                 $return = $e->getResponse();
                 break;
-            // PATCH
+                // PATCH
             case 'patch':
                 $id   = $this->getIdentifier($routeMatch, $request);
                 $data = $this->processBodyContent($request);
@@ -422,12 +426,12 @@ abstract class AbstractRestfulController extends AbstractController
                     return $response;
                 }
                 break;
-            // POST
+                // POST
             case 'post':
                 $action = 'create';
                 $return = $this->processPostData($request);
                 break;
-            // PUT
+                // PUT
             case 'put':
                 $id   = $this->getIdentifier($routeMatch, $request);
                 $data = $this->processBodyContent($request);
@@ -441,7 +445,7 @@ abstract class AbstractRestfulController extends AbstractController
                 $action = 'replaceList';
                 $return = $this->replaceList($data);
                 break;
-            // All others...
+                // All others...
             default:
                 $response = $e->getResponse();
                 $response->setStatusCode(405);

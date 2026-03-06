@@ -4,13 +4,14 @@ declare(strict_types=1);
 
 namespace LaminasTest\Mvc;
 
+use function array_values;
+
 use Laminas\Mvc\MvcEvent;
 use Laminas\Mvc\ResponseSender\SendResponseEvent;
 use Laminas\Mvc\SendResponseListener;
 use Laminas\Stdlib\ResponseInterface;
-use PHPUnit\Framework\TestCase;
 
-use function array_values;
+use PHPUnit\Framework\TestCase;
 
 class SendResponseListenerTest extends TestCase
 {

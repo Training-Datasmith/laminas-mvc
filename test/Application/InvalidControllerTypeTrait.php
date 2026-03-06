@@ -58,13 +58,13 @@ trait InvalidControllerTypeTrait
                     'ControllerLoader' => 'ControllerManager',
                 ],
                 'factories'  => [
-                    'ControllerManager' => static fn($services): ControllerManager =>
+                    'ControllerManager' => static fn ($services): ControllerManager =>
                          new ControllerManager($services, [
                              'factories' => [
-                                 'bad' => static fn(): stdClass => new stdClass(),
+                                 'bad' => static fn (): stdClass => new stdClass(),
                              ],
                          ]),
-                    'Router'            => static fn($services) => $services->get('HttpRouter'),
+                    'Router'            => static fn ($services) => $services->get('HttpRouter'),
                 ],
                 'invokables' => [
                     'Request'              => Request::class,

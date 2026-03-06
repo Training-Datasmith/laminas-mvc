@@ -58,13 +58,13 @@ trait BadControllerTrait
                     'ControllerLoader' => ControllerManager::class,
                 ],
                 'factories'  => [
-                    'ControllerManager' => static fn($services): ControllerManager =>
+                    'ControllerManager' => static fn ($services): ControllerManager =>
                         new ControllerManager($services, [
                             'factories' => [
-                                'bad' => static fn(): BadController => new BadController(),
+                                'bad' => static fn (): BadController => new BadController(),
                             ],
                         ]),
-                    'Router'            => static fn($services) => $services->get('HttpRouter'),
+                    'Router'            => static fn ($services) => $services->get('HttpRouter'),
                 ],
                 'invokables' => [
                     'Request'              => Request::class,

@@ -1,21 +1,24 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Laminas\Mvc\View\Http;
 
 use ArrayAccess;
+
+use function is_array;
+use function is_string;
+
 use Laminas\EventManager\AbstractListenerAggregate;
 use Laminas\EventManager\EventManagerInterface;
 use Laminas\EventManager\ListenerAggregateInterface;
 use Laminas\Mvc\MvcEvent;
-use Laminas\Mvc\View\Http\InjectTemplateListener;
 use Laminas\ServiceManager\ServiceManager;
 use Laminas\Stdlib\DispatchableInterface;
 use Laminas\View\Model\ModelInterface;
+
 use Laminas\View\View;
 use Traversable;
-
-use function is_array;
-use function is_string;
 
 /**
  * Prepares the view layer

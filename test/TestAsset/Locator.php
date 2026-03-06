@@ -4,10 +4,11 @@ declare(strict_types=1);
 
 namespace LaminasTest\Mvc\TestAsset;
 
-use Laminas\ServiceManager\Exception\ServiceNotFoundException;
-use Laminas\ServiceManager\ServiceLocatorInterface;
-
 use function call_user_func_array;
+
+use Laminas\ServiceManager\Exception\ServiceNotFoundException;
+
+use Laminas\ServiceManager\ServiceLocatorInterface;
 
 /**
  * Dummy locator used to test handling of locator objects by Application

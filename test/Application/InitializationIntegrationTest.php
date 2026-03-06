@@ -7,10 +7,12 @@ namespace LaminasTest\Mvc\Application;
 use Application\Controller\PathController;
 use Laminas\Mvc\Application;
 use Laminas\Mvc\MvcEvent;
-use PHPUnit\Framework\TestCase;
 
 use function ob_get_clean;
+
 use function ob_start;
+
+use PHPUnit\Framework\TestCase;
 
 class InitializationIntegrationTest extends TestCase
 {

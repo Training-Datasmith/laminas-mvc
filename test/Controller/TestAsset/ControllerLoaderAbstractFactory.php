@@ -5,11 +5,12 @@ declare(strict_types=1);
 namespace LaminasTest\Mvc\Controller\TestAsset;
 
 // phpcs:ignore
+use function class_exists;
+
 use Interop\Container\ContainerInterface;
 use Laminas\ServiceManager\Factory\AbstractFactoryInterface;
-use LaminasTest\Mvc\TestAsset\PathController;
 
-use function class_exists;
+use LaminasTest\Mvc\TestAsset\PathController;
 
 class ControllerLoaderAbstractFactory implements AbstractFactoryInterface
 {

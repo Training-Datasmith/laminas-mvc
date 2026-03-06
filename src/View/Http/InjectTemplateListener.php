@@ -1,6 +1,17 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Laminas\Mvc\View\Http;
+
+use function array_diff;
+use function array_pop;
+use function explode;
+use function implode;
+use function is_object;
+
+use function is_string;
+use function krsort;
 
 use Laminas\EventManager\AbstractListenerAggregate;
 use Laminas\EventManager\EventManagerInterface as Events;
@@ -8,13 +19,6 @@ use Laminas\Mvc\MvcEvent;
 use Laminas\Stdlib\StringUtils;
 use Laminas\View\Model\ModelInterface as ViewModel;
 
-use function array_diff;
-use function array_pop;
-use function explode;
-use function implode;
-use function is_object;
-use function is_string;
-use function krsort;
 use function preg_replace;
 use function rtrim;
 use function str_contains;

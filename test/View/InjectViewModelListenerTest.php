@@ -4,15 +4,16 @@ declare(strict_types=1);
 
 namespace LaminasTest\Mvc\View;
 
+use function count;
+
 use Laminas\EventManager\EventManager;
 use Laminas\EventManager\Test\EventListenerIntrospectionTrait;
 use Laminas\Mvc\MvcEvent;
 use Laminas\Mvc\View\Http\InjectViewModelListener;
 use Laminas\Router\RouteMatch;
 use Laminas\View\Model\ViewModel;
-use PHPUnit\Framework\TestCase;
 
-use function count;
+use PHPUnit\Framework\TestCase;
 
 class InjectViewModelListenerTest extends TestCase
 {

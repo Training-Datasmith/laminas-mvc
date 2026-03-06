@@ -5,10 +5,11 @@ declare(strict_types=1);
 namespace LaminasTest\Mvc\TestAsset;
 
 // phpcs:ignore
-use Interop\Container\ContainerInterface;
-use Laminas\ServiceManager\Factory\AbstractFactoryInterface;
-
 use function class_exists;
+
+use Interop\Container\ContainerInterface;
+
+use Laminas\ServiceManager\Factory\AbstractFactoryInterface;
 
 class MiddlewareAbstractFactory implements AbstractFactoryInterface
 {

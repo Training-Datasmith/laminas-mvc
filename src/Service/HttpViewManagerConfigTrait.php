@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Laminas\Mvc\Service;
 
 use ArrayAccess;
@@ -21,7 +23,8 @@ trait HttpViewManagerConfigTrait
 
         if (
             isset($config['view_manager'])
-            && (is_array($config['view_manager'])
+            && (
+                is_array($config['view_manager'])
                 || $config['view_manager'] instanceof ArrayAccess
             )
         ) {

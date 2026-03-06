@@ -1,20 +1,24 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Laminas\Mvc;
 
 use ArrayObject;
 use Exception;
+
+use function function_exists;
+use function is_object;
+
 use Laminas\EventManager\AbstractListenerAggregate;
 use Laminas\EventManager\EventManagerInterface;
 use Laminas\Mvc\Controller\ControllerManager;
 use Laminas\Mvc\Exception\InvalidControllerException;
 use Laminas\Router\RouteMatch;
 use Laminas\ServiceManager\Exception\InvalidServiceException;
+
 use Laminas\Stdlib\ArrayUtils;
 use Throwable;
-
-use function function_exists;
-use function is_object;
 
 /**
  * Default dispatch listener

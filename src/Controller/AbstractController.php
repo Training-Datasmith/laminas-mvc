@@ -1,6 +1,14 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Laminas\Mvc\Controller;
+
+use function array_merge;
+use function array_values;
+use function call_user_func_array;
+use function class_implements;
+use function is_callable;
 
 use Laminas\EventManager\EventInterface as Event;
 use Laminas\EventManager\EventManager;
@@ -17,17 +25,13 @@ use Laminas\Mvc\Controller\Plugin\Url;
 use Laminas\Mvc\InjectApplicationEventInterface;
 use Laminas\Mvc\MvcEvent;
 use Laminas\ServiceManager\ServiceManager;
+
 use Laminas\Stdlib\DispatchableInterface as Dispatchable;
 use Laminas\Stdlib\RequestInterface as Request;
 use Laminas\Stdlib\ResponseInterface as Response;
 use Laminas\View\Model\ModelInterface;
 use Laminas\View\Model\ViewModel;
 
-use function array_merge;
-use function array_values;
-use function call_user_func_array;
-use function class_implements;
-use function is_callable;
 use function lcfirst;
 use function str_replace;
 use function strrpos;
@@ -99,7 +103,7 @@ abstract class AbstractController implements
         $e->setResponse($response);
         $e->setTarget($this);
 
-        $result = $this->getEventManager()->triggerEventUntil(static fn($test): bool => $test instanceof Response, $e);
+        $result = $this->getEventManager()->triggerEventUntil(static fn ($test): bool => $test instanceof Response, $e);
 
         if ($result->stopped()) {
             return $result->last();

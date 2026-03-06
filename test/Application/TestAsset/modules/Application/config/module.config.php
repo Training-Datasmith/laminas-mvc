@@ -13,7 +13,7 @@ use Laminas\Router\Http\HttpRouterFactory;
 return [
     'controllers'     => [
         'factories' => [
-            'path' => static fn(): PathController => new PathController(),
+            'path' => static fn (): PathController => new PathController(),
         ],
     ],
     'router'          => [
@@ -31,8 +31,8 @@ return [
     ],
     'service_manager' => [
         'factories' => [
-            'Request'     => static fn(): HttpRequest => new HttpRequest(),
-            'Response'    => static fn(): HttpResponse => new HttpResponse(),
+            'Request'     => static fn (): HttpRequest => new HttpRequest(),
+            'Response'    => static fn (): HttpResponse => new HttpResponse(),
             'Router'      => HttpRouterFactory::class,
             'ViewManager' => HttpViewManagerFactory::class,
         ],

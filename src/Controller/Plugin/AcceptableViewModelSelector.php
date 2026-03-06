@@ -1,6 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Laminas\Mvc\Controller\Plugin;
+
+use function class_exists;
+use function is_array;
+use function key;
 
 use Laminas\Http\Header\Accept;
 use Laminas\Http\Header\Accept\FieldValuePart\AbstractFieldValuePart;
@@ -8,13 +14,11 @@ use Laminas\Http\Request;
 use Laminas\Mvc\Exception\DomainException;
 use Laminas\Mvc\Exception\InvalidArgumentException;
 use Laminas\Mvc\InjectApplicationEventInterface;
+
 use Laminas\Mvc\MvcEvent;
 use Laminas\View\Model\ModelInterface;
 use Laminas\View\Model\ViewModel;
 
-use function class_exists;
-use function is_array;
-use function key;
 use function str_replace;
 
 /**

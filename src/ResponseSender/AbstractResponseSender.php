@@ -1,12 +1,15 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Laminas\Mvc\ResponseSender;
 
-use Laminas\Http\Header\MultipleHeaderInterface;
-
 use function header;
+
 use function headers_sent;
 use function is_iterable;
+
+use Laminas\Http\Header\MultipleHeaderInterface;
 
 abstract class AbstractResponseSender implements ResponseSenderInterface
 {

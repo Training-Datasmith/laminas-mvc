@@ -1,6 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Laminas\Mvc\Controller;
+
+use function get_debug_type;
+use function is_object;
 
 use Laminas\Mvc\Controller\Plugin\AcceptableViewModelSelector;
 use Laminas\Mvc\Controller\Plugin\CreateHttpNotFoundModel;
@@ -13,11 +18,10 @@ use Laminas\Mvc\Controller\Plugin\Service\ForwardFactory;
 use Laminas\Mvc\Controller\Plugin\Url;
 use Laminas\ServiceManager\AbstractPluginManager;
 use Laminas\ServiceManager\Exception\InvalidServiceException;
+
 use Laminas\ServiceManager\Factory\InvokableFactory;
 use Laminas\Stdlib\DispatchableInterface;
 
-use function get_debug_type;
-use function is_object;
 use function method_exists;
 use function sprintf;
 

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Laminas\Mvc\Service;
 
 // phpcs:ignore
@@ -62,9 +64,9 @@ class ServiceManagerConfig extends Config
      */
     public function __construct(array $config = [])
     {
-        $this->config['factories']['ServiceManager'] = static fn($container) => $container;
+        $this->config['factories']['ServiceManager'] = static fn ($container) => $container;
 
-        $this->config['factories']['SharedEventManager'] = static fn(): SharedEventManager => new SharedEventManager();
+        $this->config['factories']['SharedEventManager'] = static fn (): SharedEventManager => new SharedEventManager();
 
         $this->config['initializers'] = ArrayUtils::merge($this->config['initializers'], [
             'EventManagerAwareInitializer' => static function ($first, $second): void {

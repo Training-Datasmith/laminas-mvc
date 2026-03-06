@@ -1,14 +1,18 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Laminas\Mvc\Service;
 
 // phpcs:ignore
+use function array_key_exists;
+
 use Interop\Container\ContainerInterface;
+
+use function is_array;
+
 use Laminas\Mvc\HttpMethodListener;
 use Laminas\ServiceManager\Factory\FactoryInterface;
-
-use function array_key_exists;
-use function is_array;
 
 class HttpMethodListenerFactory implements FactoryInterface
 {

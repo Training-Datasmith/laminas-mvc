@@ -1,10 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Laminas\Mvc\ResponseSender;
 
-use Laminas\Http\Response\Stream;
-
 use function fpassthru;
+
+use Laminas\Http\Response\Stream;
 
 class SimpleStreamResponseSender extends AbstractResponseSender
 {

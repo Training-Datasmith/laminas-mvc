@@ -4,16 +4,18 @@ declare(strict_types=1);
 
 namespace LaminasTest\Mvc\ResponseSender;
 
+use function array_diff;
+use function array_shift;
+use function count;
+use function function_exists;
+
 use Laminas\Http\Headers;
+
 use Laminas\Http\Response;
 use Laminas\Mvc\ResponseSender\AbstractResponseSender;
 use Laminas\Mvc\ResponseSender\SendResponseEvent;
 use PHPUnit\Framework\TestCase;
 
-use function array_diff;
-use function array_shift;
-use function count;
-use function function_exists;
 use function phpversion;
 use function version_compare;
 

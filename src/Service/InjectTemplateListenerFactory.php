@@ -1,13 +1,17 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Laminas\Mvc\Service;
 
 // phpcs:ignore
 use Interop\Container\ContainerInterface;
-use Laminas\Mvc\View\Http\InjectTemplateListener;
-use Laminas\ServiceManager\Factory\FactoryInterface;
 
 use function is_array;
+
+use Laminas\Mvc\View\Http\InjectTemplateListener;
+
+use Laminas\ServiceManager\Factory\FactoryInterface;
 
 class InjectTemplateListenerFactory implements FactoryInterface
 {

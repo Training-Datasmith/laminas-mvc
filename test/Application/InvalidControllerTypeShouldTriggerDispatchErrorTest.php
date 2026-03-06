@@ -25,7 +25,7 @@ class InvalidControllerTypeShouldTriggerDispatchErrorTest extends TestCase
             $error      = $e->getError();
             $controller = $e->getController();
             $class      = $e->getControllerClass();
-            $response->setContent("Code: " . $error . '; Controller: ' . $controller . '; Class: ' . $class);
+            $response->setContent('Code: ' . $error . '; Controller: ' . $controller . '; Class: ' . $class);
             return $response;
         });
 

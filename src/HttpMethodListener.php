@@ -1,13 +1,17 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Laminas\Mvc;
+
+use function in_array;
 
 use Laminas\EventManager\AbstractListenerAggregate;
 use Laminas\EventManager\EventManagerInterface;
 use Laminas\Http\Request as HttpRequest;
+
 use Laminas\Http\Response as HttpResponse;
 
-use function in_array;
 use function strtoupper;
 
 class HttpMethodListener extends AbstractListenerAggregate

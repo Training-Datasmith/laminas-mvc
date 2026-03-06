@@ -1,8 +1,15 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Laminas\Mvc\Controller;
 
 // phpcs:ignore
+use function array_map;
+use function class_exists;
+use function class_implements;
+use function in_array;
+
 use Interop\Container\ContainerInterface;
 use Laminas\Console\Adapter\AdapterInterface as ConsoleAdapterInterface;
 use Laminas\Filter\FilterPluginManager;
@@ -17,15 +24,12 @@ use Laminas\Serializer\AdapterPluginManager as SerializerAdapterManager;
 use Laminas\ServiceManager\Exception\ServiceNotFoundException;
 use Laminas\ServiceManager\Factory\AbstractFactoryInterface;
 use Laminas\Stdlib\DispatchableInterface;
+
 use Laminas\Validator\ValidatorPluginManager;
 use ReflectionClass;
 use ReflectionNamedType;
 use ReflectionParameter;
 
-use function array_map;
-use function class_exists;
-use function class_implements;
-use function in_array;
 use function sprintf;
 
 /**

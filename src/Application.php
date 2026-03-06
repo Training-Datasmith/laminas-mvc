@@ -1,16 +1,19 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Laminas\Mvc;
+
+use function array_merge;
+use function array_unique;
 
 use Laminas\EventManager\EventManagerAwareInterface;
 use Laminas\EventManager\EventManagerInterface;
 use Laminas\Mvc\Service\ServiceManagerConfig;
 use Laminas\ServiceManager\ServiceManager;
+
 use Laminas\Stdlib\RequestInterface;
 use Laminas\Stdlib\ResponseInterface;
-
-use function array_merge;
-use function array_unique;
 
 /**
  * Main application class for invoking applications

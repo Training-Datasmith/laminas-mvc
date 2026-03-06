@@ -1,14 +1,18 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Laminas\Mvc\Controller\Plugin;
+
+use function is_scalar;
 
 use Laminas\Http\Response;
 use Laminas\Mvc\Exception;
 use Laminas\Mvc\Exception\DomainException;
 use Laminas\Mvc\InjectApplicationEventInterface;
+
 use Laminas\Mvc\MvcEvent;
 
-use function is_scalar;
 use function method_exists;
 
 class Redirect extends AbstractPlugin
