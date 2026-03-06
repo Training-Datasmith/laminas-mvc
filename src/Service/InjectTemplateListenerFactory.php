@@ -15,10 +15,8 @@ class InjectTemplateListenerFactory implements FactoryInterface
      * {@inheritDoc}
      *
      * Create and return an InjectTemplateListener instance.
-     *
-     * @return InjectTemplateListener
      */
-    public function __invoke(ContainerInterface $container, $requestedName, ?array $options = null)
+    public function __invoke(ContainerInterface $container, $requestedName, ?array $options = null): \Laminas\Mvc\View\Http\InjectTemplateListener
     {
         $listener = new InjectTemplateListener();
         $config   = $container->get('config');

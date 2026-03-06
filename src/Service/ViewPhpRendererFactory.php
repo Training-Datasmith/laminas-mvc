@@ -11,10 +11,8 @@ class ViewPhpRendererFactory implements FactoryInterface
 {
     /**
      * @param  string $requestedName
-     * @param  null|array $options
-     * @return PhpRenderer
      */
-    public function __invoke(ContainerInterface $container, $requestedName, ?array $options = null)
+    public function __invoke(ContainerInterface $container, $requestedName, ?array $options = null): \Laminas\View\Renderer\PhpRenderer
     {
         $renderer = new PhpRenderer();
         $renderer->setHelperPluginManager($container->get('ViewHelperManager'));

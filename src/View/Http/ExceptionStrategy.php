@@ -29,10 +29,10 @@ class ExceptionStrategy extends AbstractListenerAggregate
     /**
      * {@inheritDoc}
      */
-    public function attach(EventManagerInterface $events, $priority = 1)
+    public function attach(EventManagerInterface $events, $priority = 1): void
     {
-        $this->listeners[] = $events->attach(MvcEvent::EVENT_DISPATCH_ERROR, [$this, 'prepareExceptionViewModel']);
-        $this->listeners[] = $events->attach(MvcEvent::EVENT_RENDER_ERROR, [$this, 'prepareExceptionViewModel']);
+        $this->listeners[] = $events->attach(MvcEvent::EVENT_DISPATCH_ERROR, $this->prepareExceptionViewModel(...));
+        $this->listeners[] = $events->attach(MvcEvent::EVENT_RENDER_ERROR, $this->prepareExceptionViewModel(...));
     }
 
     /**
@@ -87,9 +87,8 @@ class ExceptionStrategy extends AbstractListenerAggregate
      *         priority dispatch.error event (or goto a render event) to ensure
      *         rendering occurs, and that munging of view models occurs when
      *         expected.
-     * @return void
      */
-    public function prepareExceptionViewModel(MvcEvent $e)
+    public function prepareExceptionViewModel(MvcEvent $e): void
     {
         // Do nothing if no error in the event
         $error = $e->getError();

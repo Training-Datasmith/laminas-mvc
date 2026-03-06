@@ -20,9 +20,9 @@ class ModuleRouteListener extends AbstractListenerAggregate
      *
      * @param  int $priority
      */
-    public function attach(EventManagerInterface $events, $priority = 1)
+    public function attach(EventManagerInterface $events, $priority = 1): void
     {
-        $this->listeners[] = $events->attach(MvcEvent::EVENT_ROUTE, [$this, 'onRoute'], $priority);
+        $this->listeners[] = $events->attach(MvcEvent::EVENT_ROUTE, $this->onRoute(...), $priority);
     }
 
     /**
@@ -32,10 +32,8 @@ class ModuleRouteListener extends AbstractListenerAggregate
      * If the route match contains a parameter key matching the MODULE_NAMESPACE
      * constant, that value will be prepended, with a namespace separator, to
      * the matched controller parameter.
-     *
-     * @return null
      */
-    public function onRoute(MvcEvent $e)
+    public function onRoute(MvcEvent $e): void
     {
         $matches = $e->getRouteMatch();
         if (! $matches instanceof RouteMatch) {

@@ -12,11 +12,10 @@ class RouteListener extends AbstractListenerAggregate
      * Attach to an event manager
      *
      * @param  int $priority
-     * @return void
      */
-    public function attach(EventManagerInterface $events, $priority = 1)
+    public function attach(EventManagerInterface $events, $priority = 1): void
     {
-        $this->listeners[] = $events->attach(MvcEvent::EVENT_ROUTE, [$this, 'onRoute']);
+        $this->listeners[] = $events->attach(MvcEvent::EVENT_ROUTE, $this->onRoute(...));
     }
 
     /**

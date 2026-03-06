@@ -26,10 +26,8 @@ class SimpleStreamResponseSender extends AbstractResponseSender
 
     /**
      * Send stream response
-     *
-     * @return SimpleStreamResponseSender
      */
-    public function __invoke(SendResponseEvent $event)
+    public function __invoke(SendResponseEvent $event): static
     {
         $response = $event->getResponse();
         if (! $response instanceof Stream) {

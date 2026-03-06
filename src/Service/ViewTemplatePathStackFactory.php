@@ -19,10 +19,8 @@ class ViewTemplatePathStackFactory implements FactoryInterface
      * ['view_manager']['default_template_suffix']
      *
      * @param  string $requestedName
-     * @param  null|array $options
-     * @return ViewResolver\TemplatePathStack
      */
-    public function __invoke(ContainerInterface $container, $requestedName, ?array $options = null)
+    public function __invoke(ContainerInterface $container, $requestedName, ?array $options = null): \Laminas\View\Resolver\TemplatePathStack
     {
         $config = $container->get('config');
 

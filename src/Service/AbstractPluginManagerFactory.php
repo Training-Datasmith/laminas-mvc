@@ -18,7 +18,6 @@ abstract class AbstractPluginManagerFactory implements FactoryInterface
      * the PLUGIN_MANGER_CLASS constant.
      *
      * @param  string $requestedName
-     * @param  null|array $options
      * @return AbstractPluginManager
      */
     public function __invoke(ContainerInterface $container, $requestedName, ?array $options = null)

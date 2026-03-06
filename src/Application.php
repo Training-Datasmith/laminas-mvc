@@ -115,9 +115,8 @@ class Application implements
      * event.
      *
      * @param array $listeners List of listeners to attach.
-     * @return Application
      */
-    public function bootstrap(array $listeners = [])
+    public function bootstrap(array $listeners = []): static
     {
         $serviceManager = $this->serviceManager;
         $events         = $this->events;
@@ -146,10 +145,8 @@ class Application implements
 
     /**
      * Retrieve the service manager
-     *
-     * @return ServiceManager
      */
-    public function getServiceManager()
+    public function getServiceManager(): \Laminas\ServiceManager\ServiceManager
     {
         return $this->serviceManager;
     }
@@ -186,10 +183,8 @@ class Application implements
 
     /**
      * Set the event manager instance
-     *
-     * @return Application
      */
-    public function setEventManager(EventManagerInterface $eventManager)
+    public function setEventManager(EventManagerInterface $eventManager): static
     {
         $eventManager->setIdentifiers([
             self::class,
@@ -227,10 +222,9 @@ class Application implements
      * All other services are configured after module loading, thus can be
      * overridden by modules.
      *
-     * @param array $configuration
      * @return Application
      */
-    public static function init($configuration = [])
+    public static function init(array $configuration = [])
     {
         // Prepare the service manager
         $smConfig = $configuration['service_manager'] ?? [];
@@ -333,10 +327,8 @@ class Application implements
      *
      * Triggers "render" and "finish" events, and returns response from
      * event object.
-     *
-     * @return Application
      */
-    protected function completeRequest(MvcEvent $event)
+    protected function completeRequest(MvcEvent $event): static
     {
         $events = $this->events;
         $event->setTarget($this);

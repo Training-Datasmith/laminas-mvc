@@ -14,10 +14,8 @@ class HttpMethodListenerFactory implements FactoryInterface
 {
     /**
      * {@inheritdoc}
-     *
-     * @return HttpMethodListener
      */
-    public function __invoke(ContainerInterface $container, $requestedName, ?array $options = null)
+    public function __invoke(ContainerInterface $container, $requestedName, ?array $options = null): \Laminas\Mvc\HttpMethodListener
     {
         $config = $container->get('config');
 

@@ -47,11 +47,11 @@ class RouteNotFoundStrategy extends AbstractListenerAggregate
     /**
      * {@inheritDoc}
      */
-    public function attach(EventManagerInterface $events, $priority = 1)
+    public function attach(EventManagerInterface $events, $priority = 1): void
     {
-        $this->listeners[] = $events->attach(MvcEvent::EVENT_DISPATCH, [$this, 'prepareNotFoundViewModel'], -90);
-        $this->listeners[] = $events->attach(MvcEvent::EVENT_DISPATCH_ERROR, [$this, 'detectNotFoundError']);
-        $this->listeners[] = $events->attach(MvcEvent::EVENT_DISPATCH_ERROR, [$this, 'prepareNotFoundViewModel']);
+        $this->listeners[] = $events->attach(MvcEvent::EVENT_DISPATCH, $this->prepareNotFoundViewModel(...), -90);
+        $this->listeners[] = $events->attach(MvcEvent::EVENT_DISPATCH_ERROR, $this->detectNotFoundError(...));
+        $this->listeners[] = $events->attach(MvcEvent::EVENT_DISPATCH_ERROR, $this->prepareNotFoundViewModel(...));
     }
 
     /**
@@ -125,10 +125,8 @@ class RouteNotFoundStrategy extends AbstractListenerAggregate
      *
      * If a "controller not found" or "invalid controller" error type is
      * encountered, sets the response status code to 404.
-     *
-     * @return void
      */
-    public function detectNotFoundError(MvcEvent $e)
+    public function detectNotFoundError(MvcEvent $e): void
     {
         $error = $e->getError();
         if (empty($error)) {
@@ -154,10 +152,8 @@ class RouteNotFoundStrategy extends AbstractListenerAggregate
 
     /**
      * Create and return a 404 view model
-     *
-     * @return void
      */
-    public function prepareNotFoundViewModel(MvcEvent $e)
+    public function prepareNotFoundViewModel(MvcEvent $e): void
     {
         $vars = $e->getResult();
         if ($vars instanceof Response) {

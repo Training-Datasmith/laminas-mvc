@@ -16,7 +16,6 @@ class ViewPrefixPathStackResolverFactory implements FactoryInterface
      * ['view_manager']['prefix_template_path_stack']
      *
      * @param  string $requestedName
-     * @param  null|array $options
      * @return PrefixPathStackResolver
      */
     public function __invoke(ContainerInterface $container, $requestedName, ?array $options = null)

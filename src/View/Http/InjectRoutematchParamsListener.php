@@ -19,17 +19,15 @@ class InjectRoutematchParamsListener extends AbstractListenerAggregate
     /**
      * {@inheritDoc}
      */
-    public function attach(EventManagerInterface $events, $priority = 1)
+    public function attach(EventManagerInterface $events, $priority = 1): void
     {
-        $this->listeners[] = $events->attach(MvcEvent::EVENT_DISPATCH, [$this, 'injectParams'], 90);
+        $this->listeners[] = $events->attach(MvcEvent::EVENT_DISPATCH, $this->injectParams(...), 90);
     }
 
     /**
      * Take parameters from RouteMatch and inject them into the request.
-     *
-     * @return void
      */
-    public function injectParams(MvcEvent $e)
+    public function injectParams(MvcEvent $e): void
     {
         $routeMatchParams = $e->getRouteMatch()->getParams();
         $request          = $e->getRequest();
@@ -62,7 +60,7 @@ class InjectRoutematchParamsListener extends AbstractListenerAggregate
      *
      * @param  bool $overwrite
      */
-    public function setOverwrite($overwrite)
+    public function setOverwrite($overwrite): void
     {
         $this->overwrite = $overwrite;
     }

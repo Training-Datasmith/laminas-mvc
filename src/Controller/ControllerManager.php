@@ -46,8 +46,8 @@ class ControllerManager extends AbstractPluginManager
      */
     public function __construct($configOrContainerInstance, array $config = [])
     {
-        $this->addInitializer([$this, 'injectEventManager']);
-        $this->addInitializer([$this, 'injectPluginManager']);
+        $this->addInitializer($this->injectEventManager(...));
+        $this->addInitializer($this->injectPluginManager(...));
         parent::__construct($configOrContainerInstance, $config);
     }
 
@@ -56,7 +56,7 @@ class ControllerManager extends AbstractPluginManager
      *
      * {@inheritDoc}
      */
-    public function validate($plugin)
+    public function validate($plugin): void
     {
         if (! $plugin instanceof $this->instanceOf) {
             throw new InvalidServiceException(sprintf(
@@ -79,7 +79,7 @@ class ControllerManager extends AbstractPluginManager
      *
      * @param DispatchableInterface $controller
      */
-    public function injectEventManager(ContainerInterface $container, $controller)
+    public function injectEventManager(ContainerInterface $container, $controller): void
     {
         if (! $controller instanceof EventManagerAwareInterface) {
             return;
@@ -96,7 +96,7 @@ class ControllerManager extends AbstractPluginManager
      *
      * @param DispatchableInterface $controller
      */
-    public function injectPluginManager(ContainerInterface $container, $controller)
+    public function injectPluginManager(ContainerInterface $container, $controller): void
     {
         if (! method_exists($controller, 'setPluginManager')) {
             return;

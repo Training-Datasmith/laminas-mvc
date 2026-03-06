@@ -56,19 +56,16 @@ class SendResponseListener extends AbstractListenerAggregate implements
      * Attach the aggregate to the specified event manager
      *
      * @param  int $priority
-     * @return void
      */
-    public function attach(EventManagerInterface $events, $priority = 1)
+    public function attach(EventManagerInterface $events, $priority = 1): void
     {
-        $this->listeners[] = $events->attach(MvcEvent::EVENT_FINISH, [$this, 'sendResponse'], -10000);
+        $this->listeners[] = $events->attach(MvcEvent::EVENT_FINISH, $this->sendResponse(...), -10000);
     }
 
     /**
      * Send the response
-     *
-     * @return void
      */
-    public function sendResponse(MvcEvent $e)
+    public function sendResponse(MvcEvent $e): void
     {
         $response = $e->getResponse();
         if (! $response instanceof Response) {

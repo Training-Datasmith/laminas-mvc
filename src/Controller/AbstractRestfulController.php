@@ -347,7 +347,7 @@ abstract class AbstractRestfulController extends AbstractController
         }
 
         // RESTful methods
-        $method = strtolower($request->getMethod());
+        $method = strtolower((string) $request->getMethod());
         switch ($method) {
             // Custom HTTP methods (or custom overrides for standard methods)
             case isset($this->customHttpMethodsMap[$method]):
@@ -483,14 +483,14 @@ abstract class AbstractRestfulController extends AbstractController
         }
 
         $requestedContentType = $headerContentType->getFieldValue();
-        if (str_contains($requestedContentType, ';')) {
-            $headerData           = explode(';', $requestedContentType);
+        if (str_contains((string) $requestedContentType, ';')) {
+            $headerData           = explode(';', (string) $requestedContentType);
             $requestedContentType = array_shift($headerData);
         }
-        $requestedContentType = trim($requestedContentType);
+        $requestedContentType = trim((string) $requestedContentType);
         if (array_key_exists($contentType, $this->contentTypes)) {
             foreach ($this->contentTypes[$contentType] as $contentTypeValue) {
-                if (stripos($contentTypeValue, $requestedContentType) === 0) {
+                if (stripos((string) $contentTypeValue, $requestedContentType) === 0) {
                     return true;
                 }
             }
@@ -584,7 +584,7 @@ abstract class AbstractRestfulController extends AbstractController
             return $this->jsonDecode($request->getContent());
         }
 
-        parse_str($content, $parsedParams);
+        parse_str((string) $content, $parsedParams);
 
         // If parse_str fails to decode, or we have a single element with empty value
         if (

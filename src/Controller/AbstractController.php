@@ -188,10 +188,8 @@ abstract class AbstractController implements
      * Set an event to use during dispatch
      *
      * By default, will re-cast to MvcEvent if another event type is provided.
-     *
-     * @return void
      */
-    public function setEvent(Event $e)
+    public function setEvent(Event $e): void
     {
         if (! $e instanceof MvcEvent) {
             $eventParams = $e->getParams();
@@ -264,11 +262,10 @@ abstract class AbstractController implements
      * If the plugin is a functor, call it, passing the parameters provided.
      * Otherwise, return the plugin instance.
      *
-     * @param  string $method
      * @param  array  $params
      * @return mixed
      */
-    public function __call($method, $params)
+    public function __call(string $method, array $params)
     {
         $plugin = $this->plugin($method);
         if (is_callable($plugin)) {
@@ -286,7 +283,7 @@ abstract class AbstractController implements
     protected function attachDefaultListeners()
     {
         $events = $this->getEventManager();
-        $events->attach(MvcEvent::EVENT_DISPATCH, [$this, 'onDispatch']);
+        $events->attach(MvcEvent::EVENT_DISPATCH, $this->onDispatch(...));
     }
 
     /**

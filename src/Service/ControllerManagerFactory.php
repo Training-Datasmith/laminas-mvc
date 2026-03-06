@@ -20,10 +20,8 @@ class ControllerManagerFactory implements FactoryInterface
      * if the controller implements a setPluginManager() method.
      *
      * @param  string $requestedName
-     * @param  null|array $options
-     * @return ControllerManager
      */
-    public function __invoke(ContainerInterface $container, $requestedName, ?array $options = null)
+    public function __invoke(ContainerInterface $container, $requestedName, ?array $options = null): \Laminas\Mvc\Controller\ControllerManager
     {
         if ($options) {
             return new ControllerManager($container, $options);

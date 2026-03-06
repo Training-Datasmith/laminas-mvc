@@ -45,9 +45,9 @@ class InjectTemplateListener extends AbstractListenerAggregate
     /**
      * {@inheritDoc}
      */
-    public function attach(Events $events, $priority = 1)
+    public function attach(Events $events, $priority = 1): void
     {
-        $this->listeners[] = $events->attach(MvcEvent::EVENT_DISPATCH, [$this, 'injectTemplate'], -90);
+        $this->listeners[] = $events->attach(MvcEvent::EVENT_DISPATCH, $this->injectTemplate(...), -90);
     }
 
     /**
@@ -55,10 +55,8 @@ class InjectTemplateListener extends AbstractListenerAggregate
      *
      * Template is derived from the controller found in the route match, and,
      * optionally, the action, if present.
-     *
-     * @return void
      */
-    public function injectTemplate(MvcEvent $e)
+    public function injectTemplate(MvcEvent $e): void
     {
         $model = $e->getResult();
         if (! $model instanceof ViewModel) {
@@ -116,20 +114,16 @@ class InjectTemplateListener extends AbstractListenerAggregate
     {
         $mapped = '';
         foreach ($this->controllerMap as $namespace => $replacement) {
-            if (
-                // Allow disabling rule by setting value to false since config
-                // merging have no feature to remove entries
-                $replacement === false
-                // Match full class or full namespace
-                || ! ($controller === $namespace || str_starts_with($controller, $namespace . '\\'))
-            ) {
+            if ($replacement === false) {
                 continue;
             }
-
+            if (! ($controller === $namespace || str_starts_with($controller, $namespace . '\\'))) {
+                continue;
+            }
             // Map namespace to $replacement if its value is string
             if (is_string($replacement)) {
                 $mapped     = rtrim($replacement, '/') . '/';
-                $controller = substr($controller, strlen($namespace) + 1) ?: '';
+                $controller = substr($controller, strlen((string) $namespace) + 1) ?: '';
                 break;
             }
         }
@@ -167,7 +161,7 @@ class InjectTemplateListener extends AbstractListenerAggregate
         }
 
         $name = preg_replace($pattern, $replacement, $name);
-        return strtolower($name);
+        return strtolower((string) $name);
     }
 
     /**
@@ -188,7 +182,7 @@ class InjectTemplateListener extends AbstractListenerAggregate
             (10 < strlen($controller))
             && (str_ends_with($controller, 'Controller'))
         ) {
-            $controller = substr($controller, 0, -10);
+            return substr($controller, 0, -10);
         }
 
         return $controller;
@@ -200,7 +194,7 @@ class InjectTemplateListener extends AbstractListenerAggregate
      *
      * @param boolean $preferRouteMatchController
      */
-    public function setPreferRouteMatchController($preferRouteMatchController)
+    public function setPreferRouteMatchController($preferRouteMatchController): void
     {
         $this->preferRouteMatchController = (bool) $preferRouteMatchController;
     }

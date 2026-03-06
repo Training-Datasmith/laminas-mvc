@@ -16,10 +16,8 @@ class ViewResolverFactory implements FactoryInterface
      * map resolver and path stack resolver
      *
      * @param  string $requestedName
-     * @param  null|array $options
-     * @return ViewResolver\AggregateResolver
      */
-    public function __invoke(ContainerInterface $container, $requestedName, ?array $options = null)
+    public function __invoke(ContainerInterface $container, $requestedName, ?array $options = null): \Laminas\View\Resolver\AggregateResolver
     {
         $resolver = new ViewResolver\AggregateResolver();
 

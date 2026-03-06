@@ -73,18 +73,17 @@ class ViewManager extends AbstractListenerAggregate
     /**
      * {@inheritDoc}
      */
-    public function attach(EventManagerInterface $events, $priority = 1)
+    public function attach(EventManagerInterface $events, $priority = 1): void
     {
-        $this->listeners[] = $events->attach(MvcEvent::EVENT_BOOTSTRAP, [$this, 'onBootstrap'], 10000);
+        $this->listeners[] = $events->attach(MvcEvent::EVENT_BOOTSTRAP, $this->onBootstrap(...), 10000);
     }
 
     /**
      * Prepares the view layer
      *
      * @param MvcEvent $event
-     * @return void
      */
-    public function onBootstrap($event)
+    public function onBootstrap($event): void
     {
         $application  = $event->getApplication();
         $services     = $application->getServiceManager();
@@ -115,14 +114,14 @@ class ViewManager extends AbstractListenerAggregate
 
         $routeNotFoundStrategy->attach($events);
         $exceptionStrategy->attach($events);
-        $events->attach(MvcEvent::EVENT_DISPATCH_ERROR, [$injectViewModelListener, 'injectViewModel'], -100);
-        $events->attach(MvcEvent::EVENT_RENDER_ERROR, [$injectViewModelListener, 'injectViewModel'], -100);
+        $events->attach(MvcEvent::EVENT_DISPATCH_ERROR, $injectViewModelListener->injectViewModel(...), -100);
+        $events->attach(MvcEvent::EVENT_RENDER_ERROR, $injectViewModelListener->injectViewModel(...), -100);
         $mvcRenderingStrategy->attach($events);
 
         $sharedEvents->attach(
             DispatchableInterface::class,
             MvcEvent::EVENT_DISPATCH,
-            [$createViewModelListener, 'createViewModelFromArray'],
+            $createViewModelListener->createViewModelFromArray(...),
             -80
         );
         $sharedEvents->attach(
@@ -134,7 +133,7 @@ class ViewManager extends AbstractListenerAggregate
         $sharedEvents->attach(
             DispatchableInterface::class,
             MvcEvent::EVENT_DISPATCH,
-            [$createViewModelListener, 'createViewModelFromNull'],
+            $createViewModelListener->createViewModelFromNull(...),
             -80
         );
         $sharedEvents->attach(
@@ -146,7 +145,7 @@ class ViewManager extends AbstractListenerAggregate
         $sharedEvents->attach(
             DispatchableInterface::class,
             MvcEvent::EVENT_DISPATCH,
-            [$injectViewModelListener, 'injectViewModel'],
+            $injectViewModelListener->injectViewModel(...),
             -100
         );
     }
@@ -262,7 +261,7 @@ class ViewManager extends AbstractListenerAggregate
     /**
      * Injects the ViewModel view helper with the root view model.
      */
-    private function injectViewModelIntoPlugin()
+    private function injectViewModelIntoPlugin(): void
     {
         $model   = $this->getViewModel();
         $plugins = $this->services->get('ViewHelperManager');

@@ -12,10 +12,8 @@ class ViewFactory implements FactoryInterface
 {
     /**
      * @param  string $requestedName
-     * @param  null|array $options
-     * @return View
      */
-    public function __invoke(ContainerInterface $container, $requestedName, ?array $options = null)
+    public function __invoke(ContainerInterface $container, $requestedName, ?array $options = null): \Laminas\View\View
     {
         $view   = new View();
         $events = $container->get('EventManager');

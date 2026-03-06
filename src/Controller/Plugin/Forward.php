@@ -42,9 +42,8 @@ class Forward extends AbstractPlugin
      * Set maximum number of nested forwards allowed
      *
      * @param  int $maxNestedForwards
-     * @return self
      */
-    public function setMaxNestedForwards($maxNestedForwards)
+    public function setMaxNestedForwards($maxNestedForwards): static
     {
         $this->maxNestedForwards = (int) $maxNestedForwards;
 
@@ -84,9 +83,8 @@ class Forward extends AbstractPlugin
      * Set information on listeners that need to be detached before dispatching.
      *
      * @param  array $listeners Listener information; see getListenersToDetach() for details on format.
-     * @return self
      */
-    public function setListenersToDetach($listeners)
+    public function setListenersToDetach($listeners): static
     {
         $this->listenersToDetach = $listeners;
 
@@ -144,9 +142,8 @@ class Forward extends AbstractPlugin
      * allow them to be reattached.
      *
      * @param  SharedEvents $sharedEvents Shared event manager
-     * @return array
      */
-    protected function detachProblemListeners(SharedEvents $sharedEvents)
+    protected function detachProblemListeners(SharedEvents $sharedEvents): array
     {
         // Convert the problem list from two-dimensional array to more convenient id => event => class format:
         $formattedProblems = [];
@@ -255,11 +252,10 @@ class Forward extends AbstractPlugin
      *
      * Varies retrieval based on laminas-eventmanager version.
      *
-     * @param string|int $id
      * @param string $event
      * @return array|Traversable
      */
-    private function getSharedListenersById($id, $event, SharedEvents $sharedEvents)
+    private function getSharedListenersById(int|string $id, int|string $event, SharedEvents $sharedEvents)
     {
         return $sharedEvents->getListeners([$id], $event);
     }
@@ -269,11 +265,9 @@ class Forward extends AbstractPlugin
      *
      * Varies detachment based on laminas-eventmanager version.
      *
-     * @param string|int $id
      * @param callable|CallbackHandler $listener
-     * @return void
      */
-    private function detachSharedListener($id, $listener, SharedEvents $sharedEvents)
+    private function detachSharedListener(int|string $id, $listener, SharedEvents $sharedEvents): void
     {
         $sharedEvents->detach($listener, $id);
     }

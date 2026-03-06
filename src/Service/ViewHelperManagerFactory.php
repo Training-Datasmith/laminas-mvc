@@ -32,7 +32,6 @@ class ViewHelperManagerFactory extends AbstractPluginManagerFactory
      * Create and return the view helper manager
      *
      * @param  string             $requestedName
-     * @param  null|array         $options
      * @return HelperPluginManager
      * @throws ServiceNotCreatedException
      */
@@ -50,10 +49,8 @@ class ViewHelperManagerFactory extends AbstractPluginManagerFactory
 
     /**
      * Inject override factories into the plugin manager.
-     *
-     * @return HelperPluginManager
      */
-    private function injectOverrideFactories(HelperPluginManager $plugins, ContainerInterface $services)
+    private function injectOverrideFactories(HelperPluginManager $plugins, ContainerInterface $services): HelperPluginManager
     {
         // Configure URL view helper
         $urlFactory = $this->createUrlHelperFactory($services);

@@ -11,10 +11,8 @@ abstract class AbstractPlugin implements PluginInterface
 
     /**
      * Set the current controller instance
-     *
-     * @return void
      */
-    public function setController(Dispatchable $controller)
+    public function setController(Dispatchable $controller): void
     {
         $this->controller = $controller;
     }

@@ -145,9 +145,8 @@ class PluginManager extends AbstractPluginManager
      * Inject a helper instance with the registered controller
      *
      * @param  object $plugin
-     * @return void
      */
-    public function injectController($plugin)
+    public function injectController($plugin): void
     {
         if (! is_object($plugin)) {
             return;
@@ -169,7 +168,7 @@ class PluginManager extends AbstractPluginManager
      *
      * {@inheritDoc}
      */
-    public function validate($plugin)
+    public function validate($plugin): void
     {
         if (! $plugin instanceof $this->instanceOf) {
             throw new InvalidServiceException(sprintf(

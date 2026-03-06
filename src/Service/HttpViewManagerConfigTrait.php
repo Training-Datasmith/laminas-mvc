@@ -15,7 +15,7 @@ trait HttpViewManagerConfigTrait
      *
      * @return array
      */
-    private function getConfig(ContainerInterface $container)
+    private function getConfig(ContainerInterface $container): \ArrayAccess|array
     {
         $config = $container->has('config') ? $container->get('config') : [];
 

@@ -8,10 +8,7 @@ use Laminas\Mvc\SendResponseListener;
 
 class SendResponseListenerFactory
 {
-    /**
-     * @return SendResponseListener
-     */
-    public function __invoke(ContainerInterface $container)
+    public function __invoke(ContainerInterface $container): \Laminas\Mvc\SendResponseListener
     {
         $listener = new SendResponseListener();
         $listener->setEventManager($container->get('EventManager'));

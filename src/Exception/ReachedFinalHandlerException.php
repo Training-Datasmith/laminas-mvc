@@ -7,10 +7,7 @@ namespace Laminas\Mvc\Exception;
  */
 class ReachedFinalHandlerException extends RuntimeException
 {
-    /**
-     * @return self
-     */
-    public static function create()
+    public static function create(): self
     {
         return new self('Reached the final handler for middleware pipe - check the pipe configuration');
     }

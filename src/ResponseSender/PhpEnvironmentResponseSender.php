@@ -8,10 +8,8 @@ class PhpEnvironmentResponseSender extends HttpResponseSender
 {
     /**
      * Send php environment response
-     *
-     * @return PhpEnvironmentResponseSender
      */
-    public function __invoke(SendResponseEvent $event)
+    public function __invoke(SendResponseEvent $event): static
     {
         $response = $event->getResponse();
         if (! $response instanceof Response) {

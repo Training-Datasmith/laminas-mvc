@@ -16,7 +16,6 @@ class EventManagerFactory implements FactoryInterface
      * of SharedEventManager.
      *
      * @param  string $requestedName
-     * @param  null|array $options
      * @return EventManager
      */
     public function __invoke(ContainerInterface $container, $requestedName, ?array $options = null)

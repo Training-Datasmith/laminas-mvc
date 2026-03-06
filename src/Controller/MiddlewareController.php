@@ -56,7 +56,7 @@ final class MiddlewareController extends AbstractController
         );
 
         $result = $this->pipe->process($psr7Request, new CallableDelegateDecorator(
-            static function (): void {
+            static function (): never {
                 throw ReachedFinalHandlerException::create();
             },
             $this->responsePrototype

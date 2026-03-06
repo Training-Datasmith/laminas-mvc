@@ -29,10 +29,8 @@ class ModuleManagerFactory implements FactoryInterface
      * and attached to the module manager.
      *
      * @param  string $requestedName
-     * @param  null|array $options
-     * @return ModuleManager
      */
-    public function __invoke(ContainerInterface $container, $requestedName, ?array $options = null)
+    public function __invoke(ContainerInterface $container, $requestedName, ?array $options = null): \Laminas\ModuleManager\ModuleManager
     {
         $configuration    = $container->get('ApplicationConfig');
         $listenerOptions  = new ListenerOptions($configuration['module_listener_options']);

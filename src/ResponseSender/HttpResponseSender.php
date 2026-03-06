@@ -8,10 +8,8 @@ class HttpResponseSender extends AbstractResponseSender
 {
     /**
      * Send content
-     *
-     * @return HttpResponseSender
      */
-    public function sendContent(SendResponseEvent $event)
+    public function sendContent(SendResponseEvent $event): static
     {
         if ($event->contentSent()) {
             return $this;
@@ -24,10 +22,8 @@ class HttpResponseSender extends AbstractResponseSender
 
     /**
      * Send HTTP response
-     *
-     * @return HttpResponseSender
      */
-    public function __invoke(SendResponseEvent $event)
+    public function __invoke(SendResponseEvent $event): static
     {
         $response = $event->getResponse();
         if (! $response instanceof Response) {

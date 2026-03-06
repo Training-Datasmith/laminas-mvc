@@ -48,13 +48,12 @@ class DispatchListener extends AbstractListenerAggregate
      * Attach listeners to an event manager
      *
      * @param  int $priority
-     * @return void
      */
-    public function attach(EventManagerInterface $events, $priority = 1)
+    public function attach(EventManagerInterface $events, $priority = 1): void
     {
-        $this->listeners[] = $events->attach(MvcEvent::EVENT_DISPATCH, [$this, 'onDispatch']);
+        $this->listeners[] = $events->attach(MvcEvent::EVENT_DISPATCH, $this->onDispatch(...));
         if (function_exists('zend_monitor_custom_event_ex')) {
-            $this->listeners[] = $events->attach(MvcEvent::EVENT_DISPATCH_ERROR, [$this, 'reportMonitorEvent']);
+            $this->listeners[] = $events->attach(MvcEvent::EVENT_DISPATCH_ERROR, $this->reportMonitorEvent(...));
         }
     }
 
@@ -133,7 +132,7 @@ class DispatchListener extends AbstractListenerAggregate
         return $this->complete($return, $e);
     }
 
-    public function reportMonitorEvent(MvcEvent $e)
+    public function reportMonitorEvent(MvcEvent $e): void
     {
         $error     = $e->getError();
         $exception = $e->getParam('exception');
@@ -191,7 +190,7 @@ class DispatchListener extends AbstractListenerAggregate
         $results = $events->triggerEvent($event);
         $return  = $results->last();
         if (! $return) {
-            $return = $event->getResult();
+            return $event->getResult();
         }
         return $return;
     }

@@ -33,11 +33,10 @@ class MiddlewareListener extends AbstractListenerAggregate
      * Attach listeners to an event manager
      *
      * @param  int                   $priority
-     * @return void
      */
-    public function attach(EventManagerInterface $events, $priority = 1)
+    public function attach(EventManagerInterface $events, $priority = 1): void
     {
-        $this->listeners[] = $events->attach(MvcEvent::EVENT_DISPATCH, [$this, 'onDispatch'], 1);
+        $this->listeners[] = $events->attach(MvcEvent::EVENT_DISPATCH, $this->onDispatch(...), 1);
     }
 
     /**
@@ -127,14 +126,13 @@ class MiddlewareListener extends AbstractListenerAggregate
     /**
      * Create a middleware pipe from the array spec given.
      *
-     * @return MiddlewarePipe
      * @throws InvalidMiddlewareException
      */
     private function createPipeFromSpec(
         ContainerInterface $serviceLocator,
         ResponseInterface $responsePrototype,
         array $middlewaresToBePiped
-    ) {
+    ): \Laminas\Stratigility\MiddlewarePipe {
         $pipe = new MiddlewarePipe();
         $pipe->setResponsePrototype($responsePrototype);
         foreach ($middlewaresToBePiped as $middlewareToBePiped) {
@@ -182,7 +180,7 @@ class MiddlewareListener extends AbstractListenerAggregate
         $results = $events->triggerEvent($event);
         $return  = $results->last();
         if (! $return) {
-            $return = $event->getResult();
+            return $event->getResult();
         }
         return $return;
     }

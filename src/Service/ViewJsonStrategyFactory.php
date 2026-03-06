@@ -18,7 +18,6 @@ class ViewJsonStrategyFactory implements FactoryInterface
      * It then attaches the strategy to the View service, at a priority of 100.
      *
      * @param  string $requestedName
-     * @param  null|array $options
      * @return JsonStrategy
      */
     public function __invoke(ContainerInterface $container, $requestedName, ?array $options = null)

@@ -13,11 +13,11 @@ class InjectViewModelListener extends AbstractListenerAggregate
     /**
      * {@inheritDoc}
      */
-    public function attach(Events $events, $priority = 1)
+    public function attach(Events $events, $priority = 1): void
     {
-        $this->listeners[] = $events->attach(MvcEvent::EVENT_DISPATCH, [$this, 'injectViewModel'], -100);
-        $this->listeners[] = $events->attach(MvcEvent::EVENT_DISPATCH_ERROR, [$this, 'injectViewModel'], -100);
-        $this->listeners[] = $events->attach(MvcEvent::EVENT_RENDER_ERROR, [$this, 'injectViewModel'], -100);
+        $this->listeners[] = $events->attach(MvcEvent::EVENT_DISPATCH, $this->injectViewModel(...), -100);
+        $this->listeners[] = $events->attach(MvcEvent::EVENT_DISPATCH_ERROR, $this->injectViewModel(...), -100);
+        $this->listeners[] = $events->attach(MvcEvent::EVENT_RENDER_ERROR, $this->injectViewModel(...), -100);
     }
 
     /**
@@ -26,10 +26,8 @@ class InjectViewModelListener extends AbstractListenerAggregate
      * Inspects the MVC result; if it's a view model, it then either (a) adds
      * it as a child to the default, composed view model, or (b) replaces it
      * if the result is marked as terminable.
-     *
-     * @return void
      */
-    public function injectViewModel(MvcEvent $e)
+    public function injectViewModel(MvcEvent $e): void
     {
         $result = $e->getResult();
         if (! $result instanceof ViewModel) {

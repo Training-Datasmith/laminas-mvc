@@ -14,10 +14,8 @@ class HttpDefaultRenderingStrategyFactory implements FactoryInterface
 
     /**
      * @param  string $requestedName
-     * @param  null|array $options
-     * @return DefaultRenderingStrategy
      */
-    public function __invoke(ContainerInterface $container, $requestedName, ?array $options = null)
+    public function __invoke(ContainerInterface $container, $requestedName, ?array $options = null): \Laminas\Mvc\View\Http\DefaultRenderingStrategy
     {
         $strategy = new DefaultRenderingStrategy($container->get(View::class));
         $config   = $this->getConfig($container);
@@ -32,7 +30,7 @@ class HttpDefaultRenderingStrategyFactory implements FactoryInterface
      *
      * Uses layout template from configuration; if none available, defaults to "layout/layout".
      */
-    private function injectLayoutTemplate(DefaultRenderingStrategy $strategy, array $config)
+    private function injectLayoutTemplate(DefaultRenderingStrategy $strategy, array $config): void
     {
         $layout = $config['layout'] ?? 'layout/layout';
         $strategy->setLayoutTemplate($layout);

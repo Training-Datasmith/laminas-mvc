@@ -13,10 +13,8 @@ class HttpExceptionStrategyFactory implements FactoryInterface
 
     /**
      * @param  string $requestedName
-     * @param  null|array $options
-     * @return ExceptionStrategy
      */
-    public function __invoke(ContainerInterface $container, $requestedName, ?array $options = null)
+    public function __invoke(ContainerInterface $container, $requestedName, ?array $options = null): \Laminas\Mvc\View\Http\ExceptionStrategy
     {
         $strategy = new ExceptionStrategy();
         $config   = $this->getConfig($container);
@@ -30,7 +28,7 @@ class HttpExceptionStrategyFactory implements FactoryInterface
     /**
      * Inject strategy with configured display_exceptions flag.
      */
-    private function injectDisplayExceptions(ExceptionStrategy $strategy, array $config)
+    private function injectDisplayExceptions(ExceptionStrategy $strategy, array $config): void
     {
         $flag = $config['display_exceptions'] ?? false;
         $strategy->setDisplayExceptions($flag);
@@ -39,7 +37,7 @@ class HttpExceptionStrategyFactory implements FactoryInterface
     /**
      * Inject strategy with configured exception_template
      */
-    private function injectExceptionTemplate(ExceptionStrategy $strategy, array $config)
+    private function injectExceptionTemplate(ExceptionStrategy $strategy, array $config): void
     {
         $template = $config['exception_template'] ?? 'error';
         $strategy->setExceptionTemplate($template);

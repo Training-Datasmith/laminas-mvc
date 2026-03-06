@@ -16,10 +16,8 @@ class ApplicationFactory implements FactoryInterface
      * service and the service manager instance.
      *
      * @param  string $requestedName
-     * @param  null|array $options
-     * @return Application
      */
-    public function __invoke(ContainerInterface $container, $requestedName, ?array $options = null)
+    public function __invoke(ContainerInterface $container, $requestedName, ?array $options = null): \Laminas\Mvc\Application
     {
         return new Application(
             $container,

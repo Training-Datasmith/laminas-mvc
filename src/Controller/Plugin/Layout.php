@@ -17,9 +17,8 @@ class Layout extends AbstractPlugin
      * Set the layout template
      *
      * @param  string $template
-     * @return Layout
      */
-    public function setTemplate($template)
+    public function setTemplate($template): static
     {
         $viewModel = $this->getViewModel();
         $viewModel->setTemplate((string) $template);

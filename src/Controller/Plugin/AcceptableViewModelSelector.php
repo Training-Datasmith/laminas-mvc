@@ -153,7 +153,7 @@ class AcceptableViewModelSelector extends AbstractPlugin
      * @param string $defaultViewModelName The default View Model name
      * @return AcceptableViewModelSelector provides fluent interface
      */
-    public function setDefaultViewModelName($defaultViewModelName)
+    public function setDefaultViewModelName($defaultViewModelName): static
     {
         $this->defaultViewModelName = (string) $defaultViewModelName;
         return $this;
@@ -175,7 +175,7 @@ class AcceptableViewModelSelector extends AbstractPlugin
      * @param array $matchAgainst (optional) The Array to match against
      * @return AcceptableViewModelSelector provides fluent interface
      */
-    public function setDefaultMatchAgainst(?array $matchAgainst = null)
+    public function setDefaultMatchAgainst(?array $matchAgainst = null): static
     {
         $this->defaultMatchAgainst = $matchAgainst;
         return $this;
@@ -196,9 +196,8 @@ class AcceptableViewModelSelector extends AbstractPlugin
      *
      * @param string $modelAcceptString
      * @param string $modelName
-     * @return string
      */
-    protected function injectViewModelName($modelAcceptString, $modelName)
+    protected function injectViewModelName($modelAcceptString, $modelName): string
     {
         $modelName         = str_replace('\\', '|', $modelName);
         $modelAcceptString = is_array($modelAcceptString)
@@ -212,7 +211,7 @@ class AcceptableViewModelSelector extends AbstractPlugin
      *
      * @return string
      */
-    protected function extractViewModelName(AbstractFieldValuePart $res)
+    protected function extractViewModelName(AbstractFieldValuePart $res): string|array
     {
         $modelName = $res->getMatchedAgainst()->params[self::INJECT_VIEWMODEL_NAME];
         return str_replace('|', '\\', $modelName);

@@ -19,7 +19,6 @@ class ConfigFactory implements FactoryInterface
      * that the merged configuration.
      *
      * @param string $requestedName
-     * @param null|array $options
      * @return array|Traversable
      */
     public function __invoke(ContainerInterface $container, $requestedName, ?array $options = null)
