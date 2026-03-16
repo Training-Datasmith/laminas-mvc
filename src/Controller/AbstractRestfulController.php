@@ -352,14 +352,19 @@ abstract class AbstractRestfulController extends AbstractController
 
         // RESTful methods
         $method = strtolower((string) $request->getMethod());
+
+        // Custom HTTP methods (or custom overrides for standard methods)
+        if (isset($this->customHttpMethodsMap[$method])) {
+            $callable = $this->customHttpMethodsMap[$method];
+            $action   = $method;
+            $return   = call_user_func($callable, $e);
+            $routeMatch->setParam('action', $action);
+            $e->setResult($return);
+            return $return;
+        }
+
         switch ($method) {
-            // Custom HTTP methods (or custom overrides for standard methods)
-            case isset($this->customHttpMethodsMap[$method]):
-                $callable = $this->customHttpMethodsMap[$method];
-                $action   = $method;
-                $return   = call_user_func($callable, $e);
-                break;
-                // DELETE
+            // DELETE
             case 'delete':
                 $id = $this->getIdentifier($routeMatch, $request);
 
@@ -494,7 +499,7 @@ abstract class AbstractRestfulController extends AbstractController
         $requestedContentType = trim((string) $requestedContentType);
         if (array_key_exists($contentType, $this->contentTypes)) {
             foreach ($this->contentTypes[$contentType] as $contentTypeValue) {
-                if (stripos((string) $contentTypeValue, $requestedContentType) === 0) {
+                if (stripos((string) $requestedContentType, $contentTypeValue) === 0) {
                     return true;
                 }
             }

@@ -5,6 +5,9 @@ declare(strict_types=1);
 namespace Laminas\Mvc\Controller\Plugin;
 
 use function is_scalar;
+use function ltrim;
+use function preg_match;
+use function str_starts_with;
 
 use Laminas\Http\Response;
 use Laminas\Mvc\Exception;
@@ -61,6 +64,14 @@ class Redirect extends AbstractPlugin
      */
     public function toUrl($url)
     {
+        // Reject javascript:, data: schemes and protocol-relative URLs to prevent open redirect
+        if (preg_match('#^\s*(javascript|data):#i', $url) || str_starts_with(ltrim($url), '//')) {
+            throw new DomainException(sprintf(
+                'Redirect URL "%s" is not allowed; javascript:, data:, and protocol-relative URLs are forbidden.',
+                $url
+            ));
+        }
+
         $response = $this->getResponse();
         $response->getHeaders()->addHeaderLine('Location', $url);
         $response->setStatusCode(302);

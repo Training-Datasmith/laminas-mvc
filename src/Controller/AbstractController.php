@@ -155,7 +155,7 @@ abstract class AbstractController implements
         ];
 
         $rightmostNsPos = strrpos($className, '\\');
-        if ($rightmostNsPos) {
+        if ($rightmostNsPos !== false) {
             $identifiers[] = strstr($className, '\\', true); // top namespace
             $identifiers[] = substr($className, 0, $rightmostNsPos); // full namespace
         }

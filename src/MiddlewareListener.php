@@ -117,9 +117,9 @@ class MiddlewareListener extends AbstractListenerAggregate
             if (! $return) {
                 $return = $event->getResult();
             }
+        } else {
+            $event->setError('');
         }
-
-        $event->setError('');
 
         if (! $return instanceof PsrResponseInterface) {
             $event->setResult($return);
