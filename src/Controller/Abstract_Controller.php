@@ -250,10 +250,7 @@ abstract class Abstract_Controller implements Dispatchable, Event_Manager_Aware_
      */
     public static function get_method_from_action($action)
     {
-        $method = str_replace(['.', '-', '_'], ' ', $action);
-        $method = ucwords($method);
-        $method = str_replace(' ', '', $method);
-        $method = lcfirst($method);
-        return $method . 'Action';
+        $method = str_replace(['.', '-'], '_', $action);
+        return $method . '_action';
     }
 }

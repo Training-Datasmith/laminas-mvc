@@ -58,7 +58,7 @@ abstract class Abstract_Action_Controller extends Abstract_Controller
         $action = $route_match->get_param('action', 'not-found');
         $method = static::get_method_from_action($action);
         if (!method_exists($this, $method)) {
-            $method = 'notFoundAction';
+            $method = 'not_found_action';
         }
         $action_response = $this->{$method}();
         $e->set_result($action_response);
