@@ -68,7 +68,19 @@ class Application implements Application_Interface, Event_Manager_Aware_Interfac
     /** @var ResponseInterface */
     protected $response;
     /**
-     * Constructor
+     * Create a new Application instance.
+     *
+     * All dependencies except the service manager are optional — when null,
+     * they are resolved from the service manager using their standard service names.
+     *
+     * @param Service_Manager              $service_manager The configured IoC container
+     * @param Event_Manager_Interface|null $events          Optional pre-built event manager;
+     *                                                       defaults to 'EventManager' from container
+     * @param Request_Interface|null       $request         Optional pre-built request;
+     *                                                       defaults to 'Request' from container
+     * @param Response_Interface|null      $response        Optional pre-built response;
+     *                                                       defaults to 'Response' from container
+     * @since 3.0.0
      */
     public function __construct(protected Service_Manager $service_manager, ?Event_Manager_Interface $events = null, ?Request_Interface $request = null, ?Response_Interface $response = null)
     {
@@ -77,11 +89,15 @@ class Application implements Application_Interface, Event_Manager_Aware_Interfac
         $this->response = $response ?: $service_manager->get('Response');
     }
     /**
-     * Retrieve the application configuration
+     * Retrieve the merged application configuration array.
      *
-     * @return array|object
+     * Returns the 'config' service from the container, which is typically the
+     * merged result of all module configurations.
+     *
+     * @return array<mixed>|object The merged application configuration
+     * @since 3.0.0
      */
-    public function get_config()
+    public function get_config(): array|object
     {
         return $this->service_manager->get('config');
     }
@@ -123,29 +139,38 @@ class Application implements Application_Interface, Event_Manager_Aware_Interfac
         return $this->service_manager;
     }
     /**
-     * Get the request object
+     * Return the current request object.
      *
-     * @return RequestInterface
+     * @return Request_Interface The HTTP (or CLI) request for this dispatch cycle
+     * @since 3.0.0
      */
-    public function get_request()
+    public function get_request(): Request_Interface
     {
         return $this->request;
     }
     /**
-     * Get the response object
+     * Return the current response object.
      *
-     * @return ResponseInterface
+     * The response is mutable; listeners and controllers write to it during
+     * the dispatch lifecycle.
+     *
+     * @return Response_Interface The response for this dispatch cycle
+     * @since 3.0.0
      */
-    public function get_response()
+    public function get_response(): Response_Interface
     {
         return $this->response;
     }
     /**
-     * Get the MVC event instance
+     * Return the MVC event that carries state through the dispatch lifecycle.
      *
-     * @return MvcEvent
+     * The event is populated with the request, response, router, and route match
+     * during bootstrap() and modified as each lifecycle stage completes.
+     *
+     * @return Mvc_Event The shared MVC lifecycle event
+     * @since 3.0.0
      */
-    public function get_mvc_event()
+    public function get_mvc_event(): Mvc_Event
     {
         return $this->event;
     }
@@ -159,35 +184,34 @@ class Application implements Application_Interface, Event_Manager_Aware_Interfac
         return $this;
     }
     /**
-     * Retrieve the event manager
+     * Retrieve the event manager.
      *
-     * Lazy-loads an EventManager instance if none registered.
-     *
-     * @return EventManagerInterface
+     * @return Event_Manager_Interface The application's event manager
+     * @since 3.0.0
      */
-    public function get_event_manager()
+    public function get_event_manager(): Event_Manager_Interface
     {
         return $this->events;
     }
     /**
-     * Static method for quick and easy initialization of the Application.
+     * Bootstrap and return a fully-initialised Application from a configuration array.
      *
-     * If you use this init() method, you cannot specify a service with the
-     * name of 'ApplicationConfig' in your service manager config. This name is
-     * reserved to hold the array from application.config.php.
+     * This is the standard entry point for a Laminas MVC application. It:
+     * 1. Builds and configures a ServiceManager from `$configuration['service_manager']`
+     * 2. Registers the full `$configuration` array as 'ApplicationConfig'
+     * 3. Loads all configured modules via ModuleManager
+     * 4. Bootstraps the Application with merged listeners from config and app config
      *
-     * The following services can only be overridden from application.config.php:
+     * Note: 'ApplicationConfig' is a reserved service name — do not register a
+     * custom service with that name in your service manager configuration.
+     * The following services may only be overridden from application.config.php:
+     * - ModuleManager, SharedEventManager, EventManager
      *
-     * - ModuleManager
-     * - SharedEventManager
-     * - EventManager & Laminas\EventManager\EventManagerInterface
-     *
-     * All other services are configured after module loading, thus can be
-     * overridden by modules.
-     *
-     * @return Application
+     * @param array<string, mixed> $configuration The full application configuration array
+     * @return static The bootstrapped, ready-to-run Application
+     * @since 3.0.0
      */
-    public static function init(array $configuration = [])
+    public static function init(array $configuration = []): static
     {
         // Prepare the service manager
         $sm_config = $configuration['service_manager'] ?? [];
@@ -205,22 +229,24 @@ class Application implements Application_Interface, Event_Manager_Aware_Interfac
         return $service_manager->get('Application')->bootstrap($listeners);
     }
     /**
-     * Run the application
+     * Execute the full MVC request/response lifecycle.
      *
-     * @triggers route(MvcEvent)
-     *           Routes the request, and sets the RouteMatch object in the event.
-     * @triggers dispatch(MvcEvent)
-     *           Dispatches a request, using the discovered RouteMatch and
-     *           provided request.
-     * @triggers dispatch.error(MvcEvent)
-     *           On errors (controller not found, action not supported, etc.),
-     *           populates the event with information about the error type,
-     *           discovered controller, and controller class (if known).
-     *           Typically, a handler should return a populated Response object
-     *           that can be returned immediately.
-     * @return self
+     * Triggers the following events in sequence:
+     *   1. `route`          — routes the request; populates RouteMatch on the event
+     *   2. `dispatch`       — dispatches the matched controller action
+     *   3. `render`         — renders the view model to a string response (via complete_request)
+     *   4. `finish`         — final processing (e.g. SendResponseListener sends headers)
+     *
+     * If routing or dispatch returns a Response directly, the remaining events are
+     * short-circuited and `finish` is triggered immediately.
+     *
+     * The `dispatch.error` event is triggered when no controller can be found,
+     * the controller cannot be dispatched, or any other dispatch-time error occurs.
+     *
+     * @return static The application instance after the full lifecycle has run
+     * @since 3.0.0
      */
-    public function run()
+    public function run(): static
     {
         $events = $this->events;
         $event = $this->event;
