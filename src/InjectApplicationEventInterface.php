@@ -1,24 +1,21 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 namespace Laminas\Mvc;
 
-use Laminas\EventManager\EventInterface as Event;
-
-interface InjectApplicationEventInterface
+use Laminas\Event_Manager\Event_Interface as Event;
+interface Inject_Application_Event_Interface
 {
     /**
      * Compose an Event
      *
      * @return void
      */
-    public function setEvent(Event $event);
-
+    public function set_event(Event $event);
     /**
      * Retrieve the composed event
      *
      * @return Event
      */
-    public function getEvent();
+    public function get_event();
 }

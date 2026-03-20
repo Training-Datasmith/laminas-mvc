@@ -1,7 +1,6 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 namespace Laminas\Mvc\Controller;
 
 use function array_key_exists;
@@ -13,19 +12,16 @@ use function get_debug_type;
 use function is_array;
 use function is_callable;
 use function json_decode;
-
-use Laminas\Http\Header\ContentType;
-
+use Laminas\Http\Header\Content_Type;
 use Laminas\Http\Request as HttpRequest;
 use Laminas\Mvc\Exception;
 use Laminas\Mvc\Exception\DomainException;
 use Laminas\Mvc\Exception\InvalidArgumentException;
 use Laminas\Mvc\Exception\RuntimeException;
-use Laminas\Mvc\MvcEvent;
-use Laminas\Router\RouteMatch;
-use Laminas\Stdlib\RequestInterface as Request;
-use Laminas\Stdlib\ResponseInterface as Response;
-
+use Laminas\Mvc\Mvc_Event;
+use Laminas\Router\Route_Match;
+use Laminas\Stdlib\Request_Interface as Request;
+use Laminas\Stdlib\Response_Interface as Response;
 use function method_exists;
 use function parse_str;
 use function reset;
@@ -34,34 +30,24 @@ use function str_contains;
 use function stripos;
 use function strtolower;
 use function trim;
-
 /**
  * Abstract RESTful controller
  */
-abstract class AbstractRestfulController extends AbstractController
+abstract class Abstract_Restful_Controller extends Abstract_Controller
 {
     public const CONTENT_TYPE_JSON = 'json';
-
     /**
      * {@inheritDoc}
      */
-    protected $eventIdentifier = self::class;
-
+    protected $event_identifier = self::class;
     /** @var array */
-    protected $contentTypes = [
-        self::CONTENT_TYPE_JSON => [
-            'application/hal+json',
-            'application/json',
-        ],
-    ];
-
+    protected $content_types = [self::CONTENT_TYPE_JSON => ['application/hal+json', 'application/json']];
     /**
      * Name of request or query parameter containing identifier
      *
      * @var string
      */
-    protected $identifierName = 'id';
-
+    protected $identifier_name = 'id';
     /**
      * Flag to pass to json_decode.
      *
@@ -73,37 +59,33 @@ abstract class AbstractRestfulController extends AbstractController
      *
      * @var bool
      */
-    protected $jsonDecodeType = true;
-
+    protected $json_decode_type = true;
     /**
      * Map of custom HTTP methods and their handlers
      *
      * @var array
      */
-    protected $customHttpMethodsMap = [];
-
+    protected $custom_http_methods_map = [];
     /**
      * Set the route match/query parameter name containing the identifier
      *
      * @param  string $name
      * @return self
      */
-    public function setIdentifierName($name)
+    public function set_identifier_name($name)
     {
-        $this->identifierName = (string) $name;
+        $this->identifier_name = (string) $name;
         return $this;
     }
-
     /**
      * Retrieve the route match/query parameter name containing the identifier
      *
      * @return string
      */
-    public function getIdentifierName()
+    public function get_identifier_name()
     {
-        return $this->identifierName;
+        return $this->identifier_name;
     }
-
     /**
      * Create a new resource
      *
@@ -111,13 +93,9 @@ abstract class AbstractRestfulController extends AbstractController
      */
     public function create(mixed $data)
     {
-        $this->response->setStatusCode(405);
-
-        return [
-            'content' => 'Method Not Allowed',
-        ];
+        $this->response->set_status_code(405);
+        return ['content' => 'Method Not Allowed'];
     }
-
     /**
      * Delete an existing resource
      *
@@ -125,13 +103,9 @@ abstract class AbstractRestfulController extends AbstractController
      */
     public function delete(mixed $id)
     {
-        $this->response->setStatusCode(405);
-
-        return [
-            'content' => 'Method Not Allowed',
-        ];
+        $this->response->set_status_code(405);
+        return ['content' => 'Method Not Allowed'];
     }
-
     /**
      * Delete the entire resource collection
      *
@@ -141,15 +115,11 @@ abstract class AbstractRestfulController extends AbstractController
      * @param mixed $data
      * @return mixed
      */
-    public function deleteList($data)
+    public function delete_list($data)
     {
-        $this->response->setStatusCode(405);
-
-        return [
-            'content' => 'Method Not Allowed',
-        ];
+        $this->response->set_status_code(405);
+        return ['content' => 'Method Not Allowed'];
     }
-
     /**
      * Return single resource
      *
@@ -157,27 +127,19 @@ abstract class AbstractRestfulController extends AbstractController
      */
     public function get(mixed $id)
     {
-        $this->response->setStatusCode(405);
-
-        return [
-            'content' => 'Method Not Allowed',
-        ];
+        $this->response->set_status_code(405);
+        return ['content' => 'Method Not Allowed'];
     }
-
     /**
      * Return list of resources
      *
      * @return mixed
      */
-    public function getList()
+    public function get_list()
     {
-        $this->response->setStatusCode(405);
-
-        return [
-            'content' => 'Method Not Allowed',
-        ];
+        $this->response->set_status_code(405);
+        return ['content' => 'Method Not Allowed'];
     }
-
     /**
      * Retrieve HEAD metadata for the resource
      *
@@ -189,13 +151,9 @@ abstract class AbstractRestfulController extends AbstractController
      */
     public function head($id = null)
     {
-        $this->response->setStatusCode(405);
-
-        return [
-            'content' => 'Method Not Allowed',
-        ];
+        $this->response->set_status_code(405);
+        return ['content' => 'Method Not Allowed'];
     }
-
     /**
      * Respond to the OPTIONS method
      *
@@ -209,13 +167,9 @@ abstract class AbstractRestfulController extends AbstractController
      */
     public function options()
     {
-        $this->response->setStatusCode(405);
-
-        return [
-            'content' => 'Method Not Allowed',
-        ];
+        $this->response->set_status_code(405);
+        return ['content' => 'Method Not Allowed'];
     }
-
     /**
      * Respond to the PATCH method
      *
@@ -228,13 +182,9 @@ abstract class AbstractRestfulController extends AbstractController
      */
     public function patch($id, $data)
     {
-        $this->response->setStatusCode(405);
-
-        return [
-            'content' => 'Method Not Allowed',
-        ];
+        $this->response->set_status_code(405);
+        return ['content' => 'Method Not Allowed'];
     }
-
     /**
      * Replace an entire resource collection
      *
@@ -243,15 +193,11 @@ abstract class AbstractRestfulController extends AbstractController
      *
      * @return mixed
      */
-    public function replaceList(mixed $data)
+    public function replace_list(mixed $data)
     {
-        $this->response->setStatusCode(405);
-
-        return [
-            'content' => 'Method Not Allowed',
-        ];
+        $this->response->set_status_code(405);
+        return ['content' => 'Method Not Allowed'];
     }
-
     /**
      * Modify a resource collection without completely replacing it
      *
@@ -260,15 +206,11 @@ abstract class AbstractRestfulController extends AbstractController
      *
      * @return mixed
      */
-    public function patchList(mixed $data)
+    public function patch_list(mixed $data)
     {
-        $this->response->setStatusCode(405);
-
-        return [
-            'content' => 'Method Not Allowed',
-        ];
+        $this->response->set_status_code(405);
+        return ['content' => 'Method Not Allowed'];
     }
-
     /**
      * Update an existing resource
      *
@@ -276,27 +218,19 @@ abstract class AbstractRestfulController extends AbstractController
      */
     public function update(mixed $id, mixed $data)
     {
-        $this->response->setStatusCode(405);
-
-        return [
-            'content' => 'Method Not Allowed',
-        ];
+        $this->response->set_status_code(405);
+        return ['content' => 'Method Not Allowed'];
     }
-
     /**
      * Basic functionality for when a page is not available
      *
      * @return array
      */
-    public function notFoundAction()
+    public function not_found_action()
     {
-        $this->response->setStatusCode(404);
-
-        return [
-            'content' => 'Page not found',
-        ];
+        $this->response->set_status_code(404);
+        return ['content' => 'Page not found'];
     }
-
     /**
      * Dispatch a request
      *
@@ -310,13 +244,11 @@ abstract class AbstractRestfulController extends AbstractController
      */
     public function dispatch(Request $request, ?Response $response = null)
     {
-        if (! $request instanceof HttpRequest) {
+        if (!$request instanceof Http_Request) {
             throw new InvalidArgumentException('Expected an HTTP request');
         }
-
         return parent::dispatch($request, $response);
     }
-
     /**
      * Handle the request
      *
@@ -324,190 +256,171 @@ abstract class AbstractRestfulController extends AbstractController
      * @return mixed
      * @throws Exception\DomainException If no route matches in event or invalid HTTP method.
      */
-    public function onDispatch(MvcEvent $e)
+    public function on_dispatch(Mvc_Event $e)
     {
-        $routeMatch = $e->getRouteMatch();
-        if (! $routeMatch) {
+        $route_match = $e->get_route_match();
+        if (!$route_match) {
             /**
              * @todo Determine requirements for when route match is missing.
              *       Potentially allow pulling directly from request metadata?
              */
             throw new DomainException('Missing route matches; unsure how to retrieve action');
         }
-
-        $request = $e->getRequest();
-
+        $request = $e->get_request();
         // Was an "action" requested?
-        $action = $routeMatch->getParam('action', false);
+        $action = $route_match->get_param('action', false);
         if ($action) {
             // Handle arbitrary methods, ending in Action
-            $method = static::getMethodFromAction($action);
-            if (! method_exists($this, $method)) {
+            $method = static::get_method_from_action($action);
+            if (!method_exists($this, $method)) {
                 $method = 'notFoundAction';
             }
-            $return = $this->$method();
-            $e->setResult($return);
+            $return = $this->{$method}();
+            $e->set_result($return);
             return $return;
         }
-
         // RESTful methods
-        $method = strtolower((string) $request->getMethod());
-
+        $method = strtolower((string) $request->get_method());
         // Custom HTTP methods (or custom overrides for standard methods)
-        if (isset($this->customHttpMethodsMap[$method])) {
-            $callable = $this->customHttpMethodsMap[$method];
-            $action   = $method;
-            $return   = call_user_func($callable, $e);
-            $routeMatch->setParam('action', $action);
-            $e->setResult($return);
+        if (isset($this->custom_http_methods_map[$method])) {
+            $callable = $this->custom_http_methods_map[$method];
+            $action = $method;
+            $return = call_user_func($callable, $e);
+            $route_match->set_param('action', $action);
+            $e->set_result($return);
             return $return;
         }
-
         switch ($method) {
             // DELETE
             case 'delete':
-                $id = $this->getIdentifier($routeMatch, $request);
-
+                $id = $this->get_identifier($route_match, $request);
                 if ($id !== false) {
                     $action = 'delete';
                     $return = $this->delete($id);
                     break;
                 }
-
-                $data = $this->processBodyContent($request);
-
+                $data = $this->process_body_content($request);
                 $action = 'deleteList';
-                $return = $this->deleteList($data);
+                $return = $this->delete_list($data);
                 break;
-                // GET
+            // GET
             case 'get':
-                $id = $this->getIdentifier($routeMatch, $request);
+                $id = $this->get_identifier($route_match, $request);
                 if ($id !== false) {
                     $action = 'get';
                     $return = $this->get($id);
                     break;
                 }
                 $action = 'getList';
-                $return = $this->getList();
+                $return = $this->get_list();
                 break;
-                // HEAD
+            // HEAD
             case 'head':
-                $id = $this->getIdentifier($routeMatch, $request);
+                $id = $this->get_identifier($route_match, $request);
                 if ($id === false) {
                     $id = null;
                 }
-                $action     = 'head';
-                $headResult = $this->head($id);
-                $response   = $headResult instanceof Response ? clone $headResult : $e->getResponse();
-                $response->setContent('');
+                $action = 'head';
+                $head_result = $this->head($id);
+                $response = $head_result instanceof Response ? clone $head_result : $e->get_response();
+                $response->set_content('');
                 $return = $response;
                 break;
-                // OPTIONS
+            // OPTIONS
             case 'options':
                 $action = 'options';
                 $this->options();
-                $return = $e->getResponse();
+                $return = $e->get_response();
                 break;
-                // PATCH
+            // PATCH
             case 'patch':
-                $id   = $this->getIdentifier($routeMatch, $request);
-                $data = $this->processBodyContent($request);
-
+                $id = $this->get_identifier($route_match, $request);
+                $data = $this->process_body_content($request);
                 if ($id !== false) {
                     $action = 'patch';
                     $return = $this->patch($id, $data);
                     break;
                 }
-
                 // TODO: This try-catch should be removed in the future, but it
                 // will create a BC break for pre-2.2.0 apps that expect a 405
                 // instead of going to patchList
                 try {
                     $action = 'patchList';
-                    $return = $this->patchList($data);
+                    $return = $this->patch_list($data);
                 } catch (RuntimeException) {
-                    $response = $e->getResponse();
-                    $response->setStatusCode(405);
+                    $response = $e->get_response();
+                    $response->set_status_code(405);
                     return $response;
                 }
                 break;
-                // POST
+            // POST
             case 'post':
                 $action = 'create';
-                $return = $this->processPostData($request);
+                $return = $this->process_post_data($request);
                 break;
-                // PUT
+            // PUT
             case 'put':
-                $id   = $this->getIdentifier($routeMatch, $request);
-                $data = $this->processBodyContent($request);
-
+                $id = $this->get_identifier($route_match, $request);
+                $data = $this->process_body_content($request);
                 if ($id !== false) {
                     $action = 'update';
                     $return = $this->update($id, $data);
                     break;
                 }
-
                 $action = 'replaceList';
-                $return = $this->replaceList($data);
+                $return = $this->replace_list($data);
                 break;
-                // All others...
+            // All others...
             default:
-                $response = $e->getResponse();
-                $response->setStatusCode(405);
+                $response = $e->get_response();
+                $response->set_status_code(405);
                 return $response;
         }
-
-        $routeMatch->setParam('action', $action);
-        $e->setResult($return);
+        $route_match->set_param('action', $action);
+        $e->set_result($return);
         return $return;
     }
-
     /**
      * Process post data and call create
      *
      * @return mixed
      * @throws Exception\DomainException If a JSON request was made, but no method for parsing JSON is available.
      */
-    public function processPostData(Request $request)
+    public function process_post_data(Request $request)
     {
-        if ($this->requestHasContentType($request, self::CONTENT_TYPE_JSON)) {
-            return $this->create($this->jsonDecode($request->getContent()));
+        if ($this->request_has_content_type($request, self::CONTENT_TYPE_JSON)) {
+            return $this->create($this->json_decode($request->get_content()));
         }
-
-        return $this->create($request->getPost()->toArray());
+        return $this->create($request->get_post()->to_array());
     }
-
     /**
      * Check if request has certain content type
      *
      * @param  string|null $contentType
      * @return bool
      */
-    public function requestHasContentType(Request $request, $contentType = '')
+    public function request_has_content_type(Request $request, $content_type = '')
     {
         /** @var ContentType $headerContentType */
-        $headerContentType = $request->getHeaders()->get('content-type');
-        if (! $headerContentType) {
+        $header_content_type = $request->get_headers()->get('content-type');
+        if (!$header_content_type) {
             return false;
         }
-
-        $requestedContentType = $headerContentType->getFieldValue();
-        if (str_contains((string) $requestedContentType, ';')) {
-            $headerData           = explode(';', (string) $requestedContentType);
-            $requestedContentType = array_shift($headerData);
+        $requested_content_type = $header_content_type->get_field_value();
+        if (str_contains((string) $requested_content_type, ';')) {
+            $header_data = explode(';', (string) $requested_content_type);
+            $requested_content_type = array_shift($header_data);
         }
-        $requestedContentType = trim((string) $requestedContentType);
-        if (array_key_exists($contentType, $this->contentTypes)) {
-            foreach ($this->contentTypes[$contentType] as $contentTypeValue) {
-                if (stripos((string) $requestedContentType, $contentTypeValue) === 0) {
+        $requested_content_type = trim((string) $requested_content_type);
+        if (array_key_exists($content_type, $this->content_types)) {
+            foreach ($this->content_types[$content_type] as $content_type_value) {
+                if (stripos((string) $requested_content_type, $content_type_value) === 0) {
                     return true;
                 }
             }
         }
-
         return false;
     }
-
     /**
      * Register a handler for a custom HTTP method
      *
@@ -533,19 +446,15 @@ abstract class AbstractRestfulController extends AbstractController
      * @param Callable $handler
      * @return AbstractRestfulController
      */
-    public function addHttpMethodHandler($method, $handler)
+    public function add_http_method_handler($method, $handler)
     {
-        if (! is_callable($handler)) {
-            throw new InvalidArgumentException(sprintf(
-                'Invalid HTTP method handler: must be a callable; received "%s"',
-                get_debug_type($handler)
-            ));
+        if (!is_callable($handler)) {
+            throw new InvalidArgumentException(sprintf('Invalid HTTP method handler: must be a callable; received "%s"', get_debug_type($handler)));
         }
-        $method                              = strtolower($method);
-        $this->customHttpMethodsMap[$method] = $handler;
+        $method = strtolower($method);
+        $this->custom_http_methods_map[$method] = $handler;
         return $this;
     }
-
     /**
      * Retrieve the identifier, if any
      *
@@ -556,22 +465,19 @@ abstract class AbstractRestfulController extends AbstractController
      * @param  Request $request
      * @return false|mixed
      */
-    protected function getIdentifier($routeMatch, $request)
+    protected function get_identifier($route_match, $request)
     {
-        $identifier = $this->getIdentifierName();
-        $id         = $routeMatch->getParam($identifier, false);
+        $identifier = $this->get_identifier_name();
+        $id = $route_match->get_param($identifier, false);
         if ($id !== false) {
             return $id;
         }
-
-        $id = $request->getQuery()->get($identifier, false);
+        $id = $request->get_query()->get($identifier, false);
         if ($id !== false) {
             return $id;
         }
-
         return false;
     }
-
     /**
      * Process the raw body content
      *
@@ -584,28 +490,20 @@ abstract class AbstractRestfulController extends AbstractController
      * @return object|string|array
      * @throws Exception\DomainException If a JSON request was made, but no method for parsing JSON is available.
      */
-    protected function processBodyContent(mixed $request)
+    protected function process_body_content(mixed $request)
     {
-        $content = $request->getContent();
-
+        $content = $request->get_content();
         // JSON content? decode and return it.
-        if ($this->requestHasContentType($request, self::CONTENT_TYPE_JSON)) {
-            return $this->jsonDecode($request->getContent());
+        if ($this->request_has_content_type($request, self::CONTENT_TYPE_JSON)) {
+            return $this->json_decode($request->get_content());
         }
-
-        parse_str((string) $content, $parsedParams);
-
+        parse_str((string) $content, $parsed_params);
         // If parse_str fails to decode, or we have a single element with empty value
-        if (
-            ! is_array($parsedParams) || empty($parsedParams)
-            || (1 === count($parsedParams) && '' === reset($parsedParams))
-        ) {
+        if (!is_array($parsed_params) || empty($parsed_params) || 1 === count($parsed_params) && '' === reset($parsed_params)) {
             return $content;
         }
-
-        return $parsedParams;
+        return $parsed_params;
     }
-
     /**
      * Decode a JSON string.
      *
@@ -616,8 +514,8 @@ abstract class AbstractRestfulController extends AbstractController
      * @param string $string
      * @return mixed
      */
-    protected function jsonDecode($string)
+    protected function json_decode($string)
     {
-        return json_decode($string, (bool) $this->jsonDecodeType);
+        return json_decode($string, (bool) $this->json_decode_type);
     }
 }

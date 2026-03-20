@@ -1,15 +1,13 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 namespace Laminas\Mvc\Service;
 
 // phpcs:ignore
-use Interop\Container\ContainerInterface;
-use Laminas\Mvc\Controller\ControllerManager;
-use Laminas\ServiceManager\Factory\FactoryInterface;
-
-class ControllerManagerFactory implements FactoryInterface
+use Interop\Container\Container_Interface;
+use Laminas\Mvc\Controller\Controller_Manager;
+use Laminas\Service_Manager\Factory\Factory_Interface;
+class Controller_Manager_Factory implements Factory_Interface
 {
     /**
      * Create the controller manager service
@@ -23,11 +21,11 @@ class ControllerManagerFactory implements FactoryInterface
      *
      * @param  string $requestedName
      */
-    public function __invoke(ContainerInterface $container, $requestedName, ?array $options = null): \Laminas\Mvc\Controller\ControllerManager
+    public function __invoke(Container_Interface $container, $requested_name, ?array $options = null): \Laminas\Mvc\Controller\Controller_Manager
     {
         if ($options) {
-            return new ControllerManager($container, $options);
+            return new Controller_Manager($container, $options);
         }
-        return new ControllerManager($container);
+        return new Controller_Manager($container);
     }
 }

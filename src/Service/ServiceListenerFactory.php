@@ -1,104 +1,34 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 namespace Laminas\Mvc\Service;
 
 // phpcs:ignore
 use function get_debug_type;
 use function gettype;
-
-use Interop\Container\ContainerInterface;
-
+use Interop\Container\Container_Interface;
 use function is_array;
 use function is_string;
-
-use Laminas\ModuleManager\Listener\ServiceListener;
-use Laminas\ModuleManager\Listener\ServiceListenerInterface;
+use Laminas\Module_Manager\Listener\Service_Listener;
+use Laminas\Module_Manager\Listener\Service_Listener_Interface;
 use Laminas\Mvc;
-
-use Laminas\ServiceManager\Exception\ServiceNotCreatedException;
-use Laminas\ServiceManager\Factory\FactoryInterface;
-use Laminas\ServiceManager\Factory\InvokableFactory;
+use Laminas\Service_Manager\Exception\Service_Not_Created_Exception;
+use Laminas\Service_Manager\Factory\Factory_Interface;
+use Laminas\Service_Manager\Factory\Invokable_Factory;
 use Laminas\View;
-
 use function sprintf;
-
-class ServiceListenerFactory implements FactoryInterface
+class Service_Listener_Factory implements Factory_Interface
 {
     /** @var string */
     public const MISSING_KEY_ERROR = 'Invalid service listener options detected, %s array must contain %s key.';
-
     /** @var string */
     public const VALUE_TYPE_ERROR = 'Invalid service listener options detected, %s must be a string, %s given.';
-
     /**
      * Default mvc-related service configuration -- can be overridden by modules.
      *
      * @var array
      */
-    protected $defaultServiceConfig = [
-        'aliases'    => [
-            'application'                               => 'Application',
-            'Config'                                    => 'config',
-            'configuration'                             => 'config',
-            'Configuration'                             => 'config',
-            'HttpDefaultRenderingStrategy'              => Mvc\View\Http\DefaultRenderingStrategy::class,
-            'MiddlewareListener'                        => Mvc\MiddlewareListener::class,
-            'request'                                   => 'Request',
-            'response'                                  => 'Response',
-            'RouteListener'                             => Mvc\RouteListener::class,
-            'SendResponseListener'                      => Mvc\SendResponseListener::class,
-            'View'                                      => View\View::class,
-            'ViewFeedRenderer'                          => View\Renderer\FeedRenderer::class,
-            'ViewJsonRenderer'                          => View\Renderer\JsonRenderer::class,
-            'ViewPhpRendererStrategy'                   => View\Strategy\PhpRendererStrategy::class,
-            'ViewPhpRenderer'                           => View\Renderer\PhpRenderer::class,
-            'ViewRenderer'                              => View\Renderer\PhpRenderer::class,
-            Mvc\Controller\PluginManager::class         => 'ControllerPluginManager',
-            Mvc\View\Http\InjectTemplateListener::class => 'InjectTemplateListener',
-            View\Renderer\RendererInterface::class      => View\Renderer\PhpRenderer::class,
-            View\Resolver\TemplateMapResolver::class    => 'ViewTemplateMapResolver',
-            View\Resolver\TemplatePathStack::class      => 'ViewTemplatePathStack',
-            View\Resolver\AggregateResolver::class      => 'ViewResolver',
-            View\Resolver\ResolverInterface::class      => 'ViewResolver',
-            Mvc\Controller\ControllerManager::class     => 'ControllerManager',
-        ],
-        'invokables' => [],
-        'factories'  => [
-            'Application'                                 => ApplicationFactory::class,
-            'config'                                      => Mvc\Service\ConfigFactory::class,
-            'ControllerManager'                           => Mvc\Service\ControllerManagerFactory::class,
-            'ControllerPluginManager'                     => Mvc\Service\ControllerPluginManagerFactory::class,
-            'DispatchListener'                            => Mvc\Service\DispatchListenerFactory::class,
-            'HttpExceptionStrategy'                       => HttpExceptionStrategyFactory::class,
-            'HttpMethodListener'                          => Mvc\Service\HttpMethodListenerFactory::class,
-            'HttpRouteNotFoundStrategy'                   => HttpRouteNotFoundStrategyFactory::class,
-            'HttpViewManager'                             => Mvc\Service\HttpViewManagerFactory::class,
-            'InjectTemplateListener'                      => Mvc\Service\InjectTemplateListenerFactory::class,
-            'PaginatorPluginManager'                      => Mvc\Service\PaginatorPluginManagerFactory::class,
-            'Request'                                     => Mvc\Service\RequestFactory::class,
-            'Response'                                    => Mvc\Service\ResponseFactory::class,
-            'ViewHelperManager'                           => Mvc\Service\ViewHelperManagerFactory::class,
-            Mvc\View\Http\DefaultRenderingStrategy::class => HttpDefaultRenderingStrategyFactory::class,
-            'ViewFeedStrategy'                            => Mvc\Service\ViewFeedStrategyFactory::class,
-            'ViewJsonStrategy'                            => Mvc\Service\ViewJsonStrategyFactory::class,
-            'ViewManager'                                 => Mvc\Service\ViewManagerFactory::class,
-            'ViewResolver'                                => Mvc\Service\ViewResolverFactory::class,
-            'ViewTemplateMapResolver'                     => Mvc\Service\ViewTemplateMapResolverFactory::class,
-            'ViewTemplatePathStack'                       => Mvc\Service\ViewTemplatePathStackFactory::class,
-            'ViewPrefixPathStackResolver'                 => Mvc\Service\ViewPrefixPathStackResolverFactory::class,
-            Mvc\MiddlewareListener::class                 => InvokableFactory::class,
-            Mvc\RouteListener::class                      => InvokableFactory::class,
-            Mvc\SendResponseListener::class               => SendResponseListenerFactory::class,
-            View\Renderer\FeedRenderer::class             => InvokableFactory::class,
-            View\Renderer\JsonRenderer::class             => InvokableFactory::class,
-            View\Renderer\PhpRenderer::class              => ViewPhpRendererFactory::class,
-            View\Strategy\PhpRendererStrategy::class      => ViewPhpRendererStrategyFactory::class,
-            View\View::class                              => ViewFactory::class,
-        ],
-    ];
-
+    protected $default_service_config = ['aliases' => ['application' => 'Application', 'Config' => 'config', 'configuration' => 'config', 'Configuration' => 'config', 'HttpDefaultRenderingStrategy' => Mvc\View\Http\Default_Rendering_Strategy::class, 'MiddlewareListener' => Mvc\Middleware_Listener::class, 'request' => 'Request', 'response' => 'Response', 'RouteListener' => Mvc\Route_Listener::class, 'SendResponseListener' => Mvc\Send_Response_Listener::class, 'View' => View\View::class, 'ViewFeedRenderer' => View\Renderer\Feed_Renderer::class, 'ViewJsonRenderer' => View\Renderer\Json_Renderer::class, 'ViewPhpRendererStrategy' => View\Strategy\Php_Renderer_Strategy::class, 'ViewPhpRenderer' => View\Renderer\Php_Renderer::class, 'ViewRenderer' => View\Renderer\Php_Renderer::class, Mvc\Controller\Plugin_Manager::class => 'ControllerPluginManager', Mvc\View\Http\Inject_Template_Listener::class => 'InjectTemplateListener', View\Renderer\Renderer_Interface::class => View\Renderer\Php_Renderer::class, View\Resolver\Template_Map_Resolver::class => 'ViewTemplateMapResolver', View\Resolver\Template_Path_Stack::class => 'ViewTemplatePathStack', View\Resolver\Aggregate_Resolver::class => 'ViewResolver', View\Resolver\Resolver_Interface::class => 'ViewResolver', Mvc\Controller\Controller_Manager::class => 'ControllerManager'], 'invokables' => [], 'factories' => ['Application' => Application_Factory::class, 'config' => Mvc\Service\Config_Factory::class, 'ControllerManager' => Mvc\Service\Controller_Manager_Factory::class, 'ControllerPluginManager' => Mvc\Service\Controller_Plugin_Manager_Factory::class, 'DispatchListener' => Mvc\Service\Dispatch_Listener_Factory::class, 'HttpExceptionStrategy' => Http_Exception_Strategy_Factory::class, 'HttpMethodListener' => Mvc\Service\Http_Method_Listener_Factory::class, 'HttpRouteNotFoundStrategy' => Http_Route_Not_Found_Strategy_Factory::class, 'HttpViewManager' => Mvc\Service\Http_View_Manager_Factory::class, 'InjectTemplateListener' => Mvc\Service\Inject_Template_Listener_Factory::class, 'PaginatorPluginManager' => Mvc\Service\Paginator_Plugin_Manager_Factory::class, 'Request' => Mvc\Service\Request_Factory::class, 'Response' => Mvc\Service\Response_Factory::class, 'ViewHelperManager' => Mvc\Service\View_Helper_Manager_Factory::class, Mvc\View\Http\Default_Rendering_Strategy::class => Http_Default_Rendering_Strategy_Factory::class, 'ViewFeedStrategy' => Mvc\Service\View_Feed_Strategy_Factory::class, 'ViewJsonStrategy' => Mvc\Service\View_Json_Strategy_Factory::class, 'ViewManager' => Mvc\Service\View_Manager_Factory::class, 'ViewResolver' => Mvc\Service\View_Resolver_Factory::class, 'ViewTemplateMapResolver' => Mvc\Service\View_Template_Map_Resolver_Factory::class, 'ViewTemplatePathStack' => Mvc\Service\View_Template_Path_Stack_Factory::class, 'ViewPrefixPathStackResolver' => Mvc\Service\View_Prefix_Path_Stack_Resolver_Factory::class, Mvc\Middleware_Listener::class => Invokable_Factory::class, Mvc\Route_Listener::class => Invokable_Factory::class, Mvc\Send_Response_Listener::class => Send_Response_Listener_Factory::class, View\Renderer\Feed_Renderer::class => Invokable_Factory::class, View\Renderer\Json_Renderer::class => Invokable_Factory::class, View\Renderer\Php_Renderer::class => View_Php_Renderer_Factory::class, View\Strategy\Php_Renderer_Strategy::class => View_Php_Renderer_Strategy_Factory::class, View\View::class => View_Factory::class]];
     /**
      * Create the service listener service
      *
@@ -122,57 +52,35 @@ class ServiceListenerFactory implements FactoryInterface
      * @throws ServiceNotCreatedException For invalid ServiceListener service.
      * @throws ServiceNotCreatedException For invalid configurations.
      */
-    public function __invoke(ContainerInterface $container, $requestedName, ?array $options = null)
+    public function __invoke(Container_Interface $container, $requested_name, ?array $options = null)
     {
         $configuration = $container->get('ApplicationConfig');
-
-        $serviceListener = $container->has('ServiceListenerInterface')
-            ? $container->get('ServiceListenerInterface')
-            : new ServiceListener($container);
-
-        if (! $serviceListener instanceof ServiceListenerInterface) {
-            throw new ServiceNotCreatedException(
-                'The service named ServiceListenerInterface must implement '
-                . ServiceListenerInterface::class
-            );
+        $service_listener = $container->has('ServiceListenerInterface') ? $container->get('ServiceListenerInterface') : new Service_Listener($container);
+        if (!$service_listener instanceof Service_Listener_Interface) {
+            throw new Service_Not_Created_Exception('The service named ServiceListenerInterface must implement ' . Service_Listener_Interface::class);
         }
-
-        $serviceListener->setDefaultServiceConfig($this->defaultServiceConfig);
-
+        $service_listener->set_default_service_config($this->default_service_config);
         if (isset($configuration['service_listener_options'])) {
-            $this->injectServiceListenerOptions($configuration['service_listener_options'], $serviceListener);
+            $this->inject_service_listener_options($configuration['service_listener_options'], $service_listener);
         }
-
-        return $serviceListener;
+        return $service_listener;
     }
-
     /**
      * Validate and inject plugin manager options into the service listener.
      *
      * @param array $options
      * @throws ServiceListenerInterface For invalid $options types.
      */
-    private function injectServiceListenerOptions($options, ServiceListenerInterface $serviceListener): void
+    private function inject_service_listener_options($options, Service_Listener_Interface $service_listener): void
     {
-        if (! is_array($options)) {
-            throw new ServiceNotCreatedException(sprintf(
-                'The value of service_listener_options must be an array, %s given.',
-                get_debug_type($options)
-            ));
+        if (!is_array($options)) {
+            throw new Service_Not_Created_Exception(sprintf('The value of service_listener_options must be an array, %s given.', get_debug_type($options)));
         }
-
-        foreach ($options as $key => $newServiceManager) {
-            $this->validatePluginManagerOptions($newServiceManager, $key);
-
-            $serviceListener->addServiceManager(
-                $newServiceManager['service_manager'],
-                $newServiceManager['config_key'],
-                $newServiceManager['interface'],
-                $newServiceManager['method']
-            );
+        foreach ($options as $key => $new_service_manager) {
+            $this->validate_plugin_manager_options($new_service_manager, $key);
+            $service_listener->add_service_manager($new_service_manager['service_manager'], $new_service_manager['config_key'], $new_service_manager['interface'], $new_service_manager['method']);
         }
     }
-
     /**
      * Validate the structure and types for plugin manager configuration options.
      *
@@ -183,62 +91,34 @@ class ServiceListenerFactory implements FactoryInterface
      * @throws ServiceNotCreatedException For any missing configuration options.
      * @throws ServiceNotCreatedException For configuration options of invalid types.
      */
-    private function validatePluginManagerOptions($options, int|string $name): void
+    private function validate_plugin_manager_options($options, int|string $name): void
     {
-        if (! is_array($options)) {
-            throw new ServiceNotCreatedException(sprintf(
-                'Plugin manager configuration for "%s" is invalid; must be an array, received "%s"',
-                $name,
-                get_debug_type($options)
-            ));
+        if (!is_array($options)) {
+            throw new Service_Not_Created_Exception(sprintf('Plugin manager configuration for "%s" is invalid; must be an array, received "%s"', $name, get_debug_type($options)));
         }
-
-        if (! isset($options['service_manager'])) {
-            throw new ServiceNotCreatedException(sprintf(self::MISSING_KEY_ERROR, $name, 'service_manager'));
+        if (!isset($options['service_manager'])) {
+            throw new Service_Not_Created_Exception(sprintf(self::MISSING_KEY_ERROR, $name, 'service_manager'));
         }
-
-        if (! is_string($options['service_manager'])) {
-            throw new ServiceNotCreatedException(sprintf(
-                self::VALUE_TYPE_ERROR,
-                'service_manager',
-                gettype($options['service_manager'])
-            ));
+        if (!is_string($options['service_manager'])) {
+            throw new Service_Not_Created_Exception(sprintf(self::VALUE_TYPE_ERROR, 'service_manager', gettype($options['service_manager'])));
         }
-
-        if (! isset($options['config_key'])) {
-            throw new ServiceNotCreatedException(sprintf(self::MISSING_KEY_ERROR, $name, 'config_key'));
+        if (!isset($options['config_key'])) {
+            throw new Service_Not_Created_Exception(sprintf(self::MISSING_KEY_ERROR, $name, 'config_key'));
         }
-
-        if (! is_string($options['config_key'])) {
-            throw new ServiceNotCreatedException(sprintf(
-                self::VALUE_TYPE_ERROR,
-                'config_key',
-                gettype($options['config_key'])
-            ));
+        if (!is_string($options['config_key'])) {
+            throw new Service_Not_Created_Exception(sprintf(self::VALUE_TYPE_ERROR, 'config_key', gettype($options['config_key'])));
         }
-
-        if (! isset($options['interface'])) {
-            throw new ServiceNotCreatedException(sprintf(self::MISSING_KEY_ERROR, $name, 'interface'));
+        if (!isset($options['interface'])) {
+            throw new Service_Not_Created_Exception(sprintf(self::MISSING_KEY_ERROR, $name, 'interface'));
         }
-
-        if (! is_string($options['interface'])) {
-            throw new ServiceNotCreatedException(sprintf(
-                self::VALUE_TYPE_ERROR,
-                'interface',
-                gettype($options['interface'])
-            ));
+        if (!is_string($options['interface'])) {
+            throw new Service_Not_Created_Exception(sprintf(self::VALUE_TYPE_ERROR, 'interface', gettype($options['interface'])));
         }
-
-        if (! isset($options['method'])) {
-            throw new ServiceNotCreatedException(sprintf(self::MISSING_KEY_ERROR, $name, 'method'));
+        if (!isset($options['method'])) {
+            throw new Service_Not_Created_Exception(sprintf(self::MISSING_KEY_ERROR, $name, 'method'));
         }
-
-        if (! is_string($options['method'])) {
-            throw new ServiceNotCreatedException(sprintf(
-                self::VALUE_TYPE_ERROR,
-                'method',
-                gettype($options['method'])
-            ));
+        if (!is_string($options['method'])) {
+            throw new Service_Not_Created_Exception(sprintf(self::VALUE_TYPE_ERROR, 'method', gettype($options['method'])));
         }
     }
 }

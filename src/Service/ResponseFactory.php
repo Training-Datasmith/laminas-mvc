@@ -1,15 +1,13 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 namespace Laminas\Mvc\Service;
 
 // phpcs:ignore
-use Interop\Container\ContainerInterface;
-use Laminas\Http\PhpEnvironment\Response as HttpResponse;
-use Laminas\ServiceManager\Factory\FactoryInterface;
-
-class ResponseFactory implements FactoryInterface
+use Interop\Container\Container_Interface;
+use Laminas\Http\Php_Environment\Response as HttpResponse;
+use Laminas\Service_Manager\Factory\Factory_Interface;
+class Response_Factory implements Factory_Interface
 {
     /**
      * Create and return a response instance.
@@ -17,8 +15,8 @@ class ResponseFactory implements FactoryInterface
      * @param  string $requestedName
      * @return HttpResponse
      */
-    public function __invoke(ContainerInterface $container, $requestedName, ?array $options = null)
+    public function __invoke(Container_Interface $container, $requested_name, ?array $options = null)
     {
-        return new HttpResponse();
+        return new Http_Response();
     }
 }

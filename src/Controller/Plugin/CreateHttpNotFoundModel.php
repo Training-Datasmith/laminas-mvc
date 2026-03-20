@@ -1,13 +1,11 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 namespace Laminas\Mvc\Controller\Plugin;
 
 use Laminas\Http\Response;
-use Laminas\View\Model\ViewModel;
-
-class CreateHttpNotFoundModel extends AbstractPlugin
+use Laminas\View\Model\View_Model;
+class Create_Http_Not_Found_Model extends Abstract_Plugin
 {
     /**
      * Create an HTTP view model representing a "not found" page
@@ -16,8 +14,7 @@ class CreateHttpNotFoundModel extends AbstractPlugin
      */
     public function __invoke(Response $response)
     {
-        $response->setStatusCode(404);
-
-        return new ViewModel(['content' => 'Page not found']);
+        $response->set_status_code(404);
+        return new View_Model(['content' => 'Page not found']);
     }
 }

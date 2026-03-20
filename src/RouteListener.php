@@ -1,25 +1,22 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 namespace Laminas\Mvc;
 
-use Laminas\EventManager\AbstractListenerAggregate;
-use Laminas\EventManager\EventManagerInterface;
-use Laminas\Router\RouteMatch;
-
-class RouteListener extends AbstractListenerAggregate
+use Laminas\Event_Manager\Abstract_Listener_Aggregate;
+use Laminas\Event_Manager\Event_Manager_Interface;
+use Laminas\Router\Route_Match;
+class Route_Listener extends Abstract_Listener_Aggregate
 {
     /**
      * Attach to an event manager
      *
      * @param  int $priority
      */
-    public function attach(EventManagerInterface $events, $priority = 1): void
+    public function attach(Event_Manager_Interface $events, $priority = 1): void
     {
-        $this->listeners[] = $events->attach(MvcEvent::EVENT_ROUTE, $this->onRoute(...));
+        $this->listeners[] = $events->attach(Mvc_Event::EVENT_ROUTE, $this->on_route(...));
     }
-
     /**
      * Listen to the "route" event and attempt to route the request
      *
@@ -30,26 +27,22 @@ class RouteListener extends AbstractListenerAggregate
      *
      * @return null|RouteMatch
      */
-    public function onRoute(MvcEvent $event)
+    public function on_route(Mvc_Event $event)
     {
-        $request    = $event->getRequest();
-        $router     = $event->getRouter();
-        $routeMatch = $router->match($request);
-
-        if ($routeMatch instanceof RouteMatch) {
-            $event->setRouteMatch($routeMatch);
-            return $routeMatch;
+        $request = $event->get_request();
+        $router = $event->get_router();
+        $route_match = $router->match($request);
+        if ($route_match instanceof Route_Match) {
+            $event->set_route_match($route_match);
+            return $route_match;
         }
-
-        $event->setName(MvcEvent::EVENT_DISPATCH_ERROR);
-        $event->setError(Application::ERROR_ROUTER_NO_MATCH);
-
-        $target  = $event->getTarget();
-        $results = $target->getEventManager()->triggerEvent($event);
-        if (! empty($results)) {
+        $event->set_name(Mvc_Event::EVENT_DISPATCH_ERROR);
+        $event->set_error(Application::ERROR_ROUTER_NO_MATCH);
+        $target = $event->get_target();
+        $results = $target->get_event_manager()->trigger_event($event);
+        if (!empty($results)) {
             return $results->last();
         }
-
-        return $event->getParams();
+        return $event->get_params();
     }
 }

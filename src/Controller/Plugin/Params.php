@@ -1,15 +1,13 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 namespace Laminas\Mvc\Controller\Plugin;
 
 use ArrayAccess;
-use Laminas\Http\Header\HeaderInterface;
+use Laminas\Http\Header\Header_Interface;
 use Laminas\Mvc\Exception\RuntimeException;
-use Laminas\Mvc\InjectApplicationEventInterface;
-
-class Params extends AbstractPlugin
+use Laminas\Mvc\Inject_Application_Event_Interface;
+class Params extends Abstract_Plugin
 {
     /**
      * Grabs a param from route match by default.
@@ -22,9 +20,8 @@ class Params extends AbstractPlugin
         if ($param === null) {
             return $this;
         }
-        return $this->fromRoute($param, $default);
+        return $this->from_route($param, $default);
     }
-
     /**
      * Return all files or a single file.
      *
@@ -32,15 +29,13 @@ class Params extends AbstractPlugin
      * @param  mixed $default Default value to use when the file is missing.
      * @return array|ArrayAccess|null
      */
-    public function fromFiles($name = null, mixed $default = null)
+    public function from_files($name = null, mixed $default = null)
     {
         if ($name === null) {
-            return $this->getController()->getRequest()->getFiles($name, $default)->toArray();
+            return $this->get_controller()->get_request()->get_files($name, $default)->to_array();
         }
-
-        return $this->getController()->getRequest()->getFiles($name, $default);
+        return $this->get_controller()->get_request()->get_files($name, $default);
     }
-
     /**
      * Return all header parameters or a single header parameter.
      *
@@ -48,15 +43,13 @@ class Params extends AbstractPlugin
      * @param  mixed $default Default value to use when the requested header is missing.
      * @return null|HeaderInterface
      */
-    public function fromHeader($header = null, mixed $default = null)
+    public function from_header($header = null, mixed $default = null)
     {
         if ($header === null) {
-            return $this->getController()->getRequest()->getHeaders($header, $default)->toArray();
+            return $this->get_controller()->get_request()->get_headers($header, $default)->to_array();
         }
-
-        return $this->getController()->getRequest()->getHeaders($header, $default);
+        return $this->get_controller()->get_request()->get_headers($header, $default);
     }
-
     /**
      * Return all post parameters or a single post parameter.
      *
@@ -64,15 +57,13 @@ class Params extends AbstractPlugin
      * @param mixed $default Default value to use when the parameter is missing.
      * @return mixed
      */
-    public function fromPost($param = null, mixed $default = null)
+    public function from_post($param = null, mixed $default = null)
     {
         if ($param === null) {
-            return $this->getController()->getRequest()->getPost($param, $default)->toArray();
+            return $this->get_controller()->get_request()->get_post($param, $default)->to_array();
         }
-
-        return $this->getController()->getRequest()->getPost($param, $default);
+        return $this->get_controller()->get_request()->get_post($param, $default);
     }
-
     /**
      * Return all query parameters or a single query parameter.
      *
@@ -80,15 +71,13 @@ class Params extends AbstractPlugin
      * @param mixed $default Default value to use when the parameter is missing.
      * @return mixed
      */
-    public function fromQuery($param = null, mixed $default = null)
+    public function from_query($param = null, mixed $default = null)
     {
         if ($param === null) {
-            return $this->getController()->getRequest()->getQuery($param, $default)->toArray();
+            return $this->get_controller()->get_request()->get_query($param, $default)->to_array();
         }
-
-        return $this->getController()->getRequest()->getQuery($param, $default);
+        return $this->get_controller()->get_request()->get_query($param, $default);
     }
-
     /**
      * Return all route parameters or a single route parameter.
      *
@@ -97,20 +86,15 @@ class Params extends AbstractPlugin
      * @return mixed
      * @throws RuntimeException
      */
-    public function fromRoute($param = null, mixed $default = null)
+    public function from_route($param = null, mixed $default = null)
     {
-        $controller = $this->getController();
-
-        if (! $controller instanceof InjectApplicationEventInterface) {
-            throw new RuntimeException(
-                'Controllers must implement Laminas\Mvc\InjectApplicationEventInterface to use this plugin.'
-            );
+        $controller = $this->get_controller();
+        if (!$controller instanceof Inject_Application_Event_Interface) {
+            throw new RuntimeException('Controllers must implement Laminas\Mvc\InjectApplicationEventInterface to use this plugin.');
         }
-
         if ($param === null) {
-            return $controller->getEvent()->getRouteMatch()->getParams();
+            return $controller->get_event()->get_route_match()->get_params();
         }
-
-        return $controller->getEvent()->getRouteMatch()->getParam($param, $default);
+        return $controller->get_event()->get_route_match()->get_param($param, $default);
     }
 }

@@ -1,27 +1,24 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 namespace Laminas\Mvc\View\Http;
 
-use Laminas\EventManager\AbstractListenerAggregate;
-use Laminas\EventManager\EventManagerInterface as Events;
-use Laminas\Mvc\MvcEvent;
-use Laminas\View\Model\ClearableModelInterface;
-use Laminas\View\Model\ModelInterface as ViewModel;
-
-class InjectViewModelListener extends AbstractListenerAggregate
+use Laminas\Event_Manager\Abstract_Listener_Aggregate;
+use Laminas\Event_Manager\Event_Manager_Interface as Events;
+use Laminas\Mvc\Mvc_Event;
+use Laminas\View\Model\Clearable_Model_Interface;
+use Laminas\View\Model\Model_Interface as ViewModel;
+class Inject_View_Model_Listener extends Abstract_Listener_Aggregate
 {
     /**
      * {@inheritDoc}
      */
     public function attach(Events $events, $priority = 1): void
     {
-        $this->listeners[] = $events->attach(MvcEvent::EVENT_DISPATCH, $this->injectViewModel(...), -100);
-        $this->listeners[] = $events->attach(MvcEvent::EVENT_DISPATCH_ERROR, $this->injectViewModel(...), -100);
-        $this->listeners[] = $events->attach(MvcEvent::EVENT_RENDER_ERROR, $this->injectViewModel(...), -100);
+        $this->listeners[] = $events->attach(Mvc_Event::EVENT_DISPATCH, $this->inject_view_model(...), -100);
+        $this->listeners[] = $events->attach(Mvc_Event::EVENT_DISPATCH_ERROR, $this->inject_view_model(...), -100);
+        $this->listeners[] = $events->attach(Mvc_Event::EVENT_RENDER_ERROR, $this->inject_view_model(...), -100);
     }
-
     /**
      * Insert the view model into the event
      *
@@ -29,24 +26,20 @@ class InjectViewModelListener extends AbstractListenerAggregate
      * it as a child to the default, composed view model, or (b) replaces it
      * if the result is marked as terminable.
      */
-    public function injectViewModel(MvcEvent $e): void
+    public function inject_view_model(Mvc_Event $e): void
     {
-        $result = $e->getResult();
-        if (! $result instanceof ViewModel) {
+        $result = $e->get_result();
+        if (!$result instanceof View_Model) {
             return;
         }
-
-        $model = $e->getViewModel();
-
+        $model = $e->get_view_model();
         if ($result->terminate()) {
-            $e->setViewModel($result);
+            $e->set_view_model($result);
             return;
         }
-
-        if ($e->getError() && $model instanceof ClearableModelInterface) {
-            $model->clearChildren();
+        if ($e->get_error() && $model instanceof Clearable_Model_Interface) {
+            $model->clear_children();
         }
-
-        $model->addChild($result);
+        $model->add_child($result);
     }
 }

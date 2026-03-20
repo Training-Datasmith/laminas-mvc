@@ -1,44 +1,35 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 namespace Laminas\Mvc;
 
-use Laminas\EventManager\AbstractListenerAggregate;
-use Laminas\EventManager\EventManager;
-use Laminas\EventManager\EventManagerAwareInterface;
-use Laminas\EventManager\EventManagerInterface;
-use Laminas\Mvc\ResponseSender\HttpResponseSender;
-use Laminas\Mvc\ResponseSender\PhpEnvironmentResponseSender;
-use Laminas\Mvc\ResponseSender\SendResponseEvent;
-use Laminas\Mvc\ResponseSender\SimpleStreamResponseSender;
-use Laminas\Stdlib\ResponseInterface as Response;
-
-class SendResponseListener extends AbstractListenerAggregate implements
-    EventManagerAwareInterface
+use Laminas\Event_Manager\Abstract_Listener_Aggregate;
+use Laminas\Event_Manager\Event_Manager;
+use Laminas\Event_Manager\Event_Manager_Aware_Interface;
+use Laminas\Event_Manager\Event_Manager_Interface;
+use Laminas\Mvc\Response_Sender\Http_Response_Sender;
+use Laminas\Mvc\Response_Sender\Php_Environment_Response_Sender;
+use Laminas\Mvc\Response_Sender\Send_Response_Event;
+use Laminas\Mvc\Response_Sender\Simple_Stream_Response_Sender;
+use Laminas\Stdlib\Response_Interface as Response;
+class Send_Response_Listener extends Abstract_Listener_Aggregate implements Event_Manager_Aware_Interface
 {
     /** @var SendResponseEvent */
     protected $event;
-
     /** @var EventManagerInterface */
-    protected $eventManager;
-
+    protected $event_manager;
     /**
      * Inject an EventManager instance
      *
      * @return SendResponseListener
      */
-    public function setEventManager(EventManagerInterface $eventManager)
+    public function set_event_manager(Event_Manager_Interface $event_manager)
     {
-        $eventManager->setIdentifiers([
-            self::class,
-            static::class,
-        ]);
-        $this->eventManager = $eventManager;
-        $this->attachDefaultListeners();
+        $event_manager->set_identifiers([self::class, static::class]);
+        $this->event_manager = $event_manager;
+        $this->attach_default_listeners();
         return $this;
     }
-
     /**
      * Retrieve the event manager
      *
@@ -46,63 +37,59 @@ class SendResponseListener extends AbstractListenerAggregate implements
      *
      * @return EventManagerInterface
      */
-    public function getEventManager()
+    public function get_event_manager()
     {
-        if (! $this->eventManager instanceof EventManagerInterface) {
-            $this->setEventManager(new EventManager());
+        if (!$this->event_manager instanceof Event_Manager_Interface) {
+            $this->set_event_manager(new Event_Manager());
         }
-        return $this->eventManager;
+        return $this->event_manager;
     }
-
     /**
      * Attach the aggregate to the specified event manager
      *
      * @param  int $priority
      */
-    public function attach(EventManagerInterface $events, $priority = 1): void
+    public function attach(Event_Manager_Interface $events, $priority = 1): void
     {
-        $this->listeners[] = $events->attach(MvcEvent::EVENT_FINISH, $this->sendResponse(...), -10000);
+        $this->listeners[] = $events->attach(Mvc_Event::EVENT_FINISH, $this->send_response(...), -10000);
     }
-
     /**
      * Send the response
      */
-    public function sendResponse(MvcEvent $e): void
+    public function send_response(Mvc_Event $e): void
     {
-        $response = $e->getResponse();
-        if (! $response instanceof Response) {
-            return; // there is no response to send
+        $response = $e->get_response();
+        if (!$response instanceof Response) {
+            return;
+            // there is no response to send
         }
-        $event = $this->getEvent();
-        $event->setResponse($response);
-        $event->setTarget($this);
-        $this->getEventManager()->triggerEvent($event);
+        $event = $this->get_event();
+        $event->set_response($response);
+        $event->set_target($this);
+        $this->get_event_manager()->trigger_event($event);
     }
-
     /**
      * Get the send response event
      *
      * @return SendResponseEvent
      */
-    public function getEvent()
+    public function get_event()
     {
-        if (! $this->event instanceof SendResponseEvent) {
-            $this->setEvent(new SendResponseEvent());
+        if (!$this->event instanceof Send_Response_Event) {
+            $this->set_event(new Send_Response_Event());
         }
         return $this->event;
     }
-
     /**
      * Set the send response event
      *
      * @return SendResponseEvent
      */
-    public function setEvent(SendResponseEvent $e)
+    public function set_event(Send_Response_Event $e)
     {
         $this->event = $e;
         return $this;
     }
-
     /**
      * Register the default event listeners
      *
@@ -113,11 +100,11 @@ class SendResponseListener extends AbstractListenerAggregate implements
      * All default response sender implementation have negative priority.
      * You are able to attach listeners without giving a priority and your response sender would be first to try.
      */
-    protected function attachDefaultListeners()
+    protected function attach_default_listeners()
     {
-        $events = $this->getEventManager();
-        $events->attach(SendResponseEvent::EVENT_SEND_RESPONSE, new PhpEnvironmentResponseSender(), -1000);
-        $events->attach(SendResponseEvent::EVENT_SEND_RESPONSE, new SimpleStreamResponseSender(), -3000);
-        $events->attach(SendResponseEvent::EVENT_SEND_RESPONSE, new HttpResponseSender(), -4000);
+        $events = $this->get_event_manager();
+        $events->attach(Send_Response_Event::EVENT_SEND_RESPONSE, new Php_Environment_Response_Sender(), -1000);
+        $events->attach(Send_Response_Event::EVENT_SEND_RESPONSE, new Simple_Stream_Response_Sender(), -3000);
+        $events->attach(Send_Response_Event::EVENT_SEND_RESPONSE, new Http_Response_Sender(), -4000);
     }
 }

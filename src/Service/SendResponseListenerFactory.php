@@ -1,19 +1,17 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 namespace Laminas\Mvc\Service;
 
 // phpcs:ignore
-use Interop\Container\ContainerInterface;
-use Laminas\Mvc\SendResponseListener;
-
-class SendResponseListenerFactory
+use Interop\Container\Container_Interface;
+use Laminas\Mvc\Send_Response_Listener;
+class Send_Response_Listener_Factory
 {
-    public function __invoke(ContainerInterface $container): \Laminas\Mvc\SendResponseListener
+    public function __invoke(Container_Interface $container): \Laminas\Mvc\Send_Response_Listener
     {
-        $listener = new SendResponseListener();
-        $listener->setEventManager($container->get('EventManager'));
+        $listener = new Send_Response_Listener();
+        $listener->set_event_manager($container->get('EventManager'));
         return $listener;
     }
 }

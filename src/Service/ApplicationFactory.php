@@ -1,15 +1,13 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 namespace Laminas\Mvc\Service;
 
 // phpcs:ignore
-use Interop\Container\ContainerInterface;
+use Interop\Container\Container_Interface;
 use Laminas\Mvc\Application;
-use Laminas\ServiceManager\Factory\FactoryInterface;
-
-class ApplicationFactory implements FactoryInterface
+use Laminas\Service_Manager\Factory\Factory_Interface;
+class Application_Factory implements Factory_Interface
 {
     /**
      * Create the Application service
@@ -19,13 +17,8 @@ class ApplicationFactory implements FactoryInterface
      *
      * @param  string $requestedName
      */
-    public function __invoke(ContainerInterface $container, $requestedName, ?array $options = null): \Laminas\Mvc\Application
+    public function __invoke(Container_Interface $container, $requested_name, ?array $options = null): \Laminas\Mvc\Application
     {
-        return new Application(
-            $container,
-            $container->get('EventManager'),
-            $container->get('Request'),
-            $container->get('Response')
-        );
+        return new Application($container, $container->get('EventManager'), $container->get('Request'), $container->get('Response'));
     }
 }

@@ -1,7 +1,6 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 namespace Laminas\Mvc\Controller\Plugin;
 
 use function array_merge;
@@ -9,19 +8,16 @@ use function func_num_args;
 use function is_array;
 use function is_bool;
 use function iterator_to_array;
-
-use Laminas\EventManager\EventInterface;
+use Laminas\Event_Manager\Event_Interface;
 use Laminas\Mvc\Exception\DomainException;
 use Laminas\Mvc\Exception\InvalidArgumentException;
 use Laminas\Mvc\Exception\RuntimeException;
-
-use Laminas\Mvc\InjectApplicationEventInterface;
-use Laminas\Mvc\ModuleRouteListener;
-use Laminas\Mvc\MvcEvent;
-use Laminas\Router\RouteStackInterface;
+use Laminas\Mvc\Inject_Application_Event_Interface;
+use Laminas\Mvc\Module_Route_Listener;
+use Laminas\Mvc\Mvc_Event;
+use Laminas\Router\Route_Stack_Interface;
 use Traversable;
-
-class Url extends AbstractPlugin
+class Url extends Abstract_Plugin
 {
     /**
      * Generates a URL based on a route
@@ -36,72 +32,55 @@ class Url extends AbstractPlugin
      * @throws DomainException
      * @return string
      */
-    public function fromRoute($route = null, $params = [], $options = [], $reuseMatchedParams = false)
+    public function from_route($route = null, $params = [], $options = [], $reuse_matched_params = false)
     {
-        $controller = $this->getController();
-        if (! $controller instanceof InjectApplicationEventInterface) {
-            throw new DomainException(
-                'Url plugin requires a controller that implements InjectApplicationEventInterface'
-            );
+        $controller = $this->get_controller();
+        if (!$controller instanceof Inject_Application_Event_Interface) {
+            throw new DomainException('Url plugin requires a controller that implements InjectApplicationEventInterface');
         }
-
-        if (! is_array($params)) {
-            if (! $params instanceof Traversable) {
-                throw new InvalidArgumentException(
-                    'Params is expected to be an array or a Traversable object'
-                );
+        if (!is_array($params)) {
+            if (!$params instanceof Traversable) {
+                throw new InvalidArgumentException('Params is expected to be an array or a Traversable object');
             }
             $params = iterator_to_array($params);
         }
-
-        $event   = $controller->getEvent();
-        $router  = null;
+        $event = $controller->get_event();
+        $router = null;
         $matches = null;
-        if ($event instanceof MvcEvent) {
-            $router  = $event->getRouter();
-            $matches = $event->getRouteMatch();
-        } elseif ($event instanceof EventInterface) {
-            $router  = $event->getParam('router', false);
-            $matches = $event->getParam('route-match', false);
+        if ($event instanceof Mvc_Event) {
+            $router = $event->get_router();
+            $matches = $event->get_route_match();
+        } elseif ($event instanceof Event_Interface) {
+            $router = $event->get_param('router', false);
+            $matches = $event->get_param('route-match', false);
         }
-        if (! $router instanceof RouteStackInterface) {
-            throw new DomainException(
-                'Url plugin requires that controller event compose a router; none found'
-            );
+        if (!$router instanceof Route_Stack_Interface) {
+            throw new DomainException('Url plugin requires that controller event compose a router; none found');
         }
-
         if (3 === func_num_args() && is_bool($options)) {
-            $reuseMatchedParams = $options;
-            $options            = [];
+            $reuse_matched_params = $options;
+            $options = [];
         }
-
         if ($route === null) {
-            if (! $matches) {
+            if (!$matches) {
                 throw new RuntimeException('No RouteMatch instance present');
             }
-
-            $route = $matches->getMatchedRouteName();
-
+            $route = $matches->get_matched_route_name();
             if ($route === null) {
                 throw new RuntimeException('RouteMatch does not contain a matched route name');
             }
         }
-
-        if ($reuseMatchedParams && $matches) {
-            $routeMatchParams = $matches->getParams();
-
-            if (isset($routeMatchParams[ModuleRouteListener::ORIGINAL_CONTROLLER])) {
-                $routeMatchParams['controller'] = $routeMatchParams[ModuleRouteListener::ORIGINAL_CONTROLLER];
-                unset($routeMatchParams[ModuleRouteListener::ORIGINAL_CONTROLLER]);
+        if ($reuse_matched_params && $matches) {
+            $route_match_params = $matches->get_params();
+            if (isset($route_match_params[Module_Route_Listener::ORIGINAL_CONTROLLER])) {
+                $route_match_params['controller'] = $route_match_params[Module_Route_Listener::ORIGINAL_CONTROLLER];
+                unset($route_match_params[Module_Route_Listener::ORIGINAL_CONTROLLER]);
             }
-
-            if (isset($routeMatchParams[ModuleRouteListener::MODULE_NAMESPACE])) {
-                unset($routeMatchParams[ModuleRouteListener::MODULE_NAMESPACE]);
+            if (isset($route_match_params[Module_Route_Listener::MODULE_NAMESPACE])) {
+                unset($route_match_params[Module_Route_Listener::MODULE_NAMESPACE]);
             }
-
-            $params = array_merge($routeMatchParams, $params);
+            $params = array_merge($route_match_params, $params);
         }
-
         $options['name'] = $route;
         return $router->assemble($params, $options);
     }

@@ -1,25 +1,20 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 namespace Laminas\Mvc;
 
 use ArrayObject;
 use Exception;
-
 use function function_exists;
 use function is_object;
-
-use Laminas\EventManager\AbstractListenerAggregate;
-use Laminas\EventManager\EventManagerInterface;
-use Laminas\Mvc\Controller\ControllerManager;
-use Laminas\Mvc\Exception\InvalidControllerException;
-use Laminas\Router\RouteMatch;
-use Laminas\ServiceManager\Exception\InvalidServiceException;
-
-use Laminas\Stdlib\ArrayUtils;
+use Laminas\Event_Manager\Abstract_Listener_Aggregate;
+use Laminas\Event_Manager\Event_Manager_Interface;
+use Laminas\Mvc\Controller\Controller_Manager;
+use Laminas\Mvc\Exception\Invalid_Controller_Exception;
+use Laminas\Router\Route_Match;
+use Laminas\Service_Manager\Exception\Invalid_Service_Exception;
+use Laminas\Stdlib\Array_Utils;
 use Throwable;
-
 /**
  * Default dispatch listener
  *
@@ -42,131 +37,99 @@ use Throwable;
  * The return value of dispatching the controller is placed into the result
  * property of the MvcEvent, and returned.
  */
-class DispatchListener extends AbstractListenerAggregate
+class Dispatch_Listener extends Abstract_Listener_Aggregate
 {
-    public function __construct(private readonly ControllerManager $controllerManager)
+    public function __construct(private readonly Controller_Manager $controller_manager)
     {
     }
-
     /**
      * Attach listeners to an event manager
      *
      * @param  int $priority
      */
-    public function attach(EventManagerInterface $events, $priority = 1): void
+    public function attach(Event_Manager_Interface $events, $priority = 1): void
     {
-        $this->listeners[] = $events->attach(MvcEvent::EVENT_DISPATCH, $this->onDispatch(...));
+        $this->listeners[] = $events->attach(Mvc_Event::EVENT_DISPATCH, $this->on_dispatch(...));
         if (function_exists('zend_monitor_custom_event_ex')) {
-            $this->listeners[] = $events->attach(MvcEvent::EVENT_DISPATCH_ERROR, $this->reportMonitorEvent(...));
+            $this->listeners[] = $events->attach(Mvc_Event::EVENT_DISPATCH_ERROR, $this->report_monitor_event(...));
         }
     }
-
     /**
      * Listen to the "dispatch" event
      *
      * @return mixed
      */
-    public function onDispatch(MvcEvent $e)
+    public function on_dispatch(Mvc_Event $e)
     {
-        if (null !== $e->getResult()) {
+        if (null !== $e->get_result()) {
             return;
         }
-
-        $routeMatch        = $e->getRouteMatch();
-        $controllerName    = $routeMatch instanceof RouteMatch
-            ? $routeMatch->getParam('controller', 'not-found')
-            : 'not-found';
-        $application       = $e->getApplication();
-        $controllerManager = $this->controllerManager;
-
+        $route_match = $e->get_route_match();
+        $controller_name = $route_match instanceof Route_Match ? $route_match->get_param('controller', 'not-found') : 'not-found';
+        $application = $e->get_application();
+        $controller_manager = $this->controller_manager;
         // Query abstract controllers, too!
-        if (! $controllerManager->has($controllerName)) {
-            $return = $this->marshalControllerNotFoundEvent(
-                $application::ERROR_CONTROLLER_NOT_FOUND,
-                $controllerName,
-                $e,
-                $application
-            );
+        if (!$controller_manager->has($controller_name)) {
+            $return = $this->marshal_controller_not_found_event($application::ERROR_CONTROLLER_NOT_FOUND, $controller_name, $e, $application);
             return $this->complete($return, $e);
         }
-
         try {
-            $controller = $controllerManager->get($controllerName);
-        } catch (InvalidControllerException | InvalidServiceException $exception) {
-            $return = $this->marshalControllerNotFoundEvent(
-                $application::ERROR_CONTROLLER_INVALID,
-                $controllerName,
-                $e,
-                $application,
-                $exception
-            );
+            $controller = $controller_manager->get($controller_name);
+        } catch (Invalid_Controller_Exception|Invalid_Service_Exception $exception) {
+            $return = $this->marshal_controller_not_found_event($application::ERROR_CONTROLLER_INVALID, $controller_name, $e, $application, $exception);
             return $this->complete($return, $e);
         } catch (Throwable $exception) {
-            $return = $this->marshalBadControllerEvent($controllerName, $e, $application, $exception);
+            $return = $this->marshal_bad_controller_event($controller_name, $e, $application, $exception);
             return $this->complete($return, $e);
         }
-
-        if ($controller instanceof InjectApplicationEventInterface) {
-            $controller->setEvent($e);
+        if ($controller instanceof Inject_Application_Event_Interface) {
+            $controller->set_event($e);
         }
-
-        $request         = $e->getRequest();
-        $response        = $application->getResponse();
-        $caughtException = null;
-
+        $request = $e->get_request();
+        $response = $application->get_response();
+        $caught_exception = null;
         try {
             $return = $controller->dispatch($request, $response);
         } catch (Throwable $ex) {
-            $caughtException = $ex;
+            $caught_exception = $ex;
         }
-
-        if ($caughtException !== null) {
-            $e->setName(MvcEvent::EVENT_DISPATCH_ERROR);
-            $e->setError($application::ERROR_EXCEPTION);
-            $e->setController($controllerName);
-            $e->setControllerClass($controller::class);
-            $e->setParam('exception', $caughtException);
-
-            $return = $application->getEventManager()->triggerEvent($e)->last();
-            if (! $return) {
-                $return = $e->getResult();
+        if ($caught_exception !== null) {
+            $e->set_name(Mvc_Event::EVENT_DISPATCH_ERROR);
+            $e->set_error($application::ERROR_EXCEPTION);
+            $e->set_controller($controller_name);
+            $e->set_controller_class($controller::class);
+            $e->set_param('exception', $caught_exception);
+            $return = $application->get_event_manager()->trigger_event($e)->last();
+            if (!$return) {
+                $return = $e->get_result();
             }
         }
-
         return $this->complete($return, $e);
     }
-
-    public function reportMonitorEvent(MvcEvent $e): void
+    public function report_monitor_event(Mvc_Event $e): void
     {
-        $error     = $e->getError();
-        $exception = $e->getParam('exception');
+        $error = $e->get_error();
+        $exception = $e->get_param('exception');
         // @TODO clean up once PHP 7 requirement is enforced
         if ($exception instanceof Exception || $exception instanceof Throwable) {
-            zend_monitor_custom_event_ex(
-                $error,
-                $exception->getMessage(),
-                'Laminas Exception',
-                ['code' => $exception->getCode(), 'trace' => $exception->getTraceAsString()]
-            );
+            zend_monitor_custom_event_ex($error, $exception->get_message(), 'Laminas Exception', ['code' => $exception->get_code(), 'trace' => $exception->get_trace_as_string()]);
         }
     }
-
     /**
      * Complete the dispatch
      *
      * @return mixed
      */
-    protected function complete(mixed $return, MvcEvent $event)
+    protected function complete(mixed $return, Mvc_Event $event)
     {
-        if (! is_object($return)) {
-            if (ArrayUtils::hasStringKeys($return)) {
+        if (!is_object($return)) {
+            if (Array_Utils::has_string_keys($return)) {
                 $return = new ArrayObject($return, ArrayObject::ARRAY_AS_PROPS);
             }
         }
-        $event->setResult($return);
+        $event->set_result($return);
         return $return;
     }
-
     /**
      * Marshal a controller not found exception event
      *
@@ -175,30 +138,23 @@ class DispatchListener extends AbstractListenerAggregate
      * @param Throwable|Exception $exception
      * @return mixed
      */
-    protected function marshalControllerNotFoundEvent(
-        $type,
-        $controllerName,
-        MvcEvent $event,
-        Application $application,
-        $exception = null
-    ) {
-        $event->setName(MvcEvent::EVENT_DISPATCH_ERROR);
-        $event->setError($type);
-        $event->setController($controllerName);
-        $event->setControllerClass('invalid controller class or alias: ' . $controllerName);
+    protected function marshal_controller_not_found_event($type, $controller_name, Mvc_Event $event, Application $application, $exception = null)
+    {
+        $event->set_name(Mvc_Event::EVENT_DISPATCH_ERROR);
+        $event->set_error($type);
+        $event->set_controller($controller_name);
+        $event->set_controller_class('invalid controller class or alias: ' . $controller_name);
         if ($exception !== null) {
-            $event->setParam('exception', $exception);
+            $event->set_param('exception', $exception);
         }
-
-        $events  = $application->getEventManager();
-        $results = $events->triggerEvent($event);
-        $return  = $results->last();
-        if (! $return) {
-            return $event->getResult();
+        $events = $application->get_event_manager();
+        $results = $events->trigger_event($event);
+        $return = $results->last();
+        if (!$return) {
+            return $event->get_result();
         }
         return $return;
     }
-
     /**
      * Marshal a bad controller exception event
      *
@@ -206,24 +162,18 @@ class DispatchListener extends AbstractListenerAggregate
      * @param Throwable|Exception $exception
      * @return mixed
      */
-    protected function marshalBadControllerEvent(
-        $controllerName,
-        MvcEvent $event,
-        Application $application,
-        $exception
-    ) {
-        $event->setName(MvcEvent::EVENT_DISPATCH_ERROR);
-        $event->setError($application::ERROR_EXCEPTION);
-        $event->setController($controllerName);
-        $event->setParam('exception', $exception);
-
-        $events  = $application->getEventManager();
-        $results = $events->triggerEvent($event);
-        $return  = $results->last();
-        if (! $return) {
-            return $event->getResult();
+    protected function marshal_bad_controller_event($controller_name, Mvc_Event $event, Application $application, $exception)
+    {
+        $event->set_name(Mvc_Event::EVENT_DISPATCH_ERROR);
+        $event->set_error($application::ERROR_EXCEPTION);
+        $event->set_controller($controller_name);
+        $event->set_param('exception', $exception);
+        $events = $application->get_event_manager();
+        $results = $events->trigger_event($event);
+        $return = $results->last();
+        if (!$return) {
+            return $event->get_result();
         }
-
         return $return;
     }
 }

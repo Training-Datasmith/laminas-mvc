@@ -1,279 +1,250 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 namespace Laminas\Mvc;
 
-use Laminas\EventManager\Event;
-use Laminas\Router\RouteMatch;
-use Laminas\Router\RouteStackInterface;
-use Laminas\Stdlib\RequestInterface as Request;
-use Laminas\Stdlib\ResponseInterface as Response;
-use Laminas\View\Model\ModelInterface as Model;
-use Laminas\View\Model\ViewModel;
-
-class MvcEvent extends Event
+use Laminas\Event_Manager\Event;
+use Laminas\Router\Route_Match;
+use Laminas\Router\Route_Stack_Interface;
+use Laminas\Stdlib\Request_Interface as Request;
+use Laminas\Stdlib\Response_Interface as Response;
+use Laminas\View\Model\Model_Interface as Model;
+use Laminas\View\Model\View_Model;
+class Mvc_Event extends Event
 {
     /**#@+
      * Mvc events triggered by eventmanager
      */
-    public const EVENT_BOOTSTRAP      = 'bootstrap';
-    public const EVENT_DISPATCH       = 'dispatch';
+    public const EVENT_BOOTSTRAP = 'bootstrap';
+    public const EVENT_DISPATCH = 'dispatch';
     public const EVENT_DISPATCH_ERROR = 'dispatch.error';
-    public const EVENT_FINISH         = 'finish';
-    public const EVENT_RENDER         = 'render';
-    public const EVENT_RENDER_ERROR   = 'render.error';
-    public const EVENT_ROUTE          = 'route';
+    public const EVENT_FINISH = 'finish';
+    public const EVENT_RENDER = 'render';
+    public const EVENT_RENDER_ERROR = 'render.error';
+    public const EVENT_ROUTE = 'route';
     /** @var ApplicationInterface|null */
     protected $application;
-
     /** @var Request */
     protected $request;
-
     /** @var Response */
     protected $response;
-
     /** @var mixed */
     protected $result;
-
     /** @var RouteStackInterface */
     protected $router;
-
     /** @var null|RouteMatch */
-    protected $routeMatch;
-
+    protected $route_match;
     /** @var Model */
-    protected $viewModel;
-
+    protected $view_model;
     /**
      * Set application instance
      *
      * @return MvcEvent
      */
-    public function setApplication(ApplicationInterface $application)
+    public function set_application(Application_Interface $application)
     {
-        $this->setParam('application', $application);
+        $this->set_param('application', $application);
         $this->application = $application;
         return $this;
     }
-
     /**
      * Get application instance
      *
      * @return ApplicationInterface
      */
-    public function getApplication()
+    public function get_application()
     {
         return $this->application;
     }
-
     /**
      * Get router
      *
      * @return RouteStackInterface
      */
-    public function getRouter()
+    public function get_router()
     {
         return $this->router;
     }
-
     /**
      * Set router
      *
      * @return MvcEvent
      */
-    public function setRouter(RouteStackInterface $router)
+    public function set_router(Route_Stack_Interface $router)
     {
-        $this->setParam('router', $router);
+        $this->set_param('router', $router);
         $this->router = $router;
         return $this;
     }
-
     /**
      * Get route match
      *
      * @return null|RouteMatch
      */
-    public function getRouteMatch()
+    public function get_route_match()
     {
-        return $this->routeMatch;
+        return $this->route_match;
     }
-
     /**
      * Set route match
      *
      * @return MvcEvent
      */
-    public function setRouteMatch(RouteMatch $matches)
+    public function set_route_match(Route_Match $matches)
     {
-        $this->setParam('route-match', $matches);
-        $this->routeMatch = $matches;
+        $this->set_param('route-match', $matches);
+        $this->route_match = $matches;
         return $this;
     }
-
     /**
      * Get request
      *
      * @return Request
      */
-    public function getRequest()
+    public function get_request()
     {
         return $this->request;
     }
-
     /**
      * Set request
      *
      * @return MvcEvent
      */
-    public function setRequest(Request $request)
+    public function set_request(Request $request)
     {
-        $this->setParam('request', $request);
+        $this->set_param('request', $request);
         $this->request = $request;
         return $this;
     }
-
     /**
      * Get response
      *
      * @return Response
      */
-    public function getResponse()
+    public function get_response()
     {
         return $this->response;
     }
-
     /**
      * Set response
      *
      * @return MvcEvent
      */
-    public function setResponse(Response $response)
+    public function set_response(Response $response)
     {
-        $this->setParam('response', $response);
+        $this->set_param('response', $response);
         $this->response = $response;
         return $this;
     }
-
     /**
      * Set the view model
      *
      * @return MvcEvent
      */
-    public function setViewModel(Model $viewModel)
+    public function set_view_model(Model $view_model)
     {
-        $this->viewModel = $viewModel;
+        $this->view_model = $view_model;
         return $this;
     }
-
     /**
      * Get the view model
      *
      * @return Model
      */
-    public function getViewModel()
+    public function get_view_model()
     {
-        if (null === $this->viewModel) {
-            $this->setViewModel(new ViewModel());
+        if (null === $this->view_model) {
+            $this->set_view_model(new View_Model());
         }
-        return $this->viewModel;
+        return $this->view_model;
     }
-
     /**
      * Get result
      *
      * @return mixed
      */
-    public function getResult()
+    public function get_result()
     {
         return $this->result;
     }
-
     /**
      * Set result
      *
      * @return MvcEvent
      */
-    public function setResult(mixed $result)
+    public function set_result(mixed $result)
     {
-        $this->setParam('__RESULT__', $result);
+        $this->set_param('__RESULT__', $result);
         $this->result = $result;
         return $this;
     }
-
     /**
      * Does the event represent an error response?
      *
      * @return bool
      */
-    public function isError()
+    public function is_error()
     {
-        return (bool) $this->getParam('error', false);
+        return (bool) $this->get_param('error', false);
     }
-
     /**
      * Set the error message (indicating error in handling request)
      *
      * @param  string $message
      * @return MvcEvent
      */
-    public function setError($message)
+    public function set_error($message)
     {
-        $this->setParam('error', $message);
+        $this->set_param('error', $message);
         return $this;
     }
-
     /**
      * Retrieve the error message, if any
      *
      * @return string
      */
-    public function getError()
+    public function get_error()
     {
-        return $this->getParam('error', '');
+        return $this->get_param('error', '');
     }
-
     /**
      * Get the currently registered controller name
      *
      * @return string
      */
-    public function getController()
+    public function get_controller()
     {
-        return $this->getParam('controller');
+        return $this->get_param('controller');
     }
-
     /**
      * Set controller name
      *
      * @param  string $name
      * @return MvcEvent
      */
-    public function setController($name)
+    public function set_controller($name)
     {
-        $this->setParam('controller', $name);
+        $this->set_param('controller', $name);
         return $this;
     }
-
     /**
      * Get controller class
      *
      * @return string
      */
-    public function getControllerClass()
+    public function get_controller_class()
     {
-        return $this->getParam('controller-class');
+        return $this->get_param('controller-class');
     }
-
     /**
      * Set controller class
      *
      * @param string $class
      * @return MvcEvent
      */
-    public function setControllerClass($class)
+    public function set_controller_class($class)
     {
-        $this->setParam('controller-class', $class);
+        $this->set_param('controller-class', $class);
         return $this;
     }
 }

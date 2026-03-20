@@ -1,15 +1,13 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 namespace Laminas\Mvc\Service;
 
 // phpcs:ignore
-use Interop\Container\ContainerInterface;
-use Laminas\ServiceManager\Factory\FactoryInterface;
-use Laminas\View\Strategy\FeedStrategy;
-
-class ViewFeedStrategyFactory implements FactoryInterface
+use Interop\Container\Container_Interface;
+use Laminas\Service_Manager\Factory\Factory_Interface;
+use Laminas\View\Strategy\Feed_Strategy;
+class View_Feed_Strategy_Factory implements Factory_Interface
 {
     /**
      * Create and return the Feed view strategy
@@ -22,8 +20,8 @@ class ViewFeedStrategyFactory implements FactoryInterface
      * @param  string $requestedName
      * @return FeedStrategy
      */
-    public function __invoke(ContainerInterface $container, $requestedName, ?array $options = null)
+    public function __invoke(Container_Interface $container, $requested_name, ?array $options = null)
     {
-        return new FeedStrategy($container->get('ViewFeedRenderer'));
+        return new Feed_Strategy($container->get('ViewFeedRenderer'));
     }
 }

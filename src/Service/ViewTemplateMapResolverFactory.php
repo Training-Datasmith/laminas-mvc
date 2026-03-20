@@ -1,19 +1,14 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 namespace Laminas\Mvc\Service;
 
 // phpcs:ignore
-use Interop\Container\ContainerInterface;
-
+use Interop\Container\Container_Interface;
 use function is_array;
-
-use Laminas\ServiceManager\Factory\FactoryInterface;
-
+use Laminas\Service_Manager\Factory\Factory_Interface;
 use Laminas\View\Resolver as ViewResolver;
-
-class ViewTemplateMapResolverFactory implements FactoryInterface
+class View_Template_Map_Resolver_Factory implements Factory_Interface
 {
     /**
      * Create the template map view resolver
@@ -24,16 +19,16 @@ class ViewTemplateMapResolverFactory implements FactoryInterface
      * @param  string $requestedName
      * @return ViewResolver\TemplateMapResolver
      */
-    public function __invoke(ContainerInterface $container, $requestedName, ?array $options = null)
+    public function __invoke(Container_Interface $container, $requested_name, ?array $options = null)
     {
         $config = $container->get('config');
-        $map    = [];
+        $map = [];
         if (is_array($config) && isset($config['view_manager'])) {
             $config = $config['view_manager'];
             if (is_array($config) && isset($config['template_map'])) {
                 $map = $config['template_map'];
             }
         }
-        return new ViewResolver\TemplateMapResolver($map);
+        return new View_Resolver\Template_Map_Resolver($map);
     }
 }

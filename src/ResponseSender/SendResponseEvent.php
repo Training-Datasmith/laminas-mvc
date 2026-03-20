@@ -1,103 +1,90 @@
 <?php
 
-declare(strict_types=1);
+declare (strict_types=1);
+namespace Laminas\Mvc\Response_Sender;
 
-namespace Laminas\Mvc\ResponseSender;
-
-use Laminas\EventManager\Event;
-use Laminas\Stdlib\ResponseInterface;
-
+use Laminas\Event_Manager\Event;
+use Laminas\Stdlib\Response_Interface;
 use function spl_object_hash;
-
-class SendResponseEvent extends Event
+class Send_Response_Event extends Event
 {
     /**#@+
      * Send response events triggered by eventmanager
      */
     public const EVENT_SEND_RESPONSE = 'sendResponse';
     /**#@-*/
-
     /** @var string Event name */
     protected $name = 'sendResponse';
-
     /** @var ResponseInterface */
     protected $response;
-
     /** @var array */
-    protected $headersSent = [];
-
+    protected $headers_sent = [];
     /** @var array */
-    protected $contentSent = [];
-
+    protected $content_sent = [];
     /**
      * @return SendResponseEvent
      */
-    public function setResponse(ResponseInterface $response)
+    public function set_response(Response_Interface $response)
     {
-        $this->setParam('response', $response);
+        $this->set_param('response', $response);
         $this->response = $response;
         return $this;
     }
-
     /**
      * @return ResponseInterface
      */
-    public function getResponse()
+    public function get_response()
     {
         return $this->response;
     }
-
     /**
      * Set content sent for current response
      *
      * @return SendResponseEvent
      */
-    public function setContentSent()
+    public function set_content_sent()
     {
-        $response                         = $this->getResponse();
-        $contentSent                      = $this->getParam('contentSent', []);
-        $responseObjectHash               = spl_object_hash($response);
-        $contentSent[$responseObjectHash] = true;
-        $this->setParam('contentSent', $contentSent);
-        $this->contentSent[$responseObjectHash] = true;
+        $response = $this->get_response();
+        $content_sent = $this->get_param('contentSent', []);
+        $response_object_hash = spl_object_hash($response);
+        $content_sent[$response_object_hash] = true;
+        $this->set_param('contentSent', $content_sent);
+        $this->content_sent[$response_object_hash] = true;
         return $this;
     }
-
     /**
      * @return bool
      */
-    public function contentSent()
+    public function content_sent()
     {
-        $response = $this->getResponse();
-        if (isset($this->contentSent[spl_object_hash($response)])) {
+        $response = $this->get_response();
+        if (isset($this->content_sent[spl_object_hash($response)])) {
             return true;
         }
         return false;
     }
-
     /**
      * Set headers sent for current response object
      *
      * @return SendResponseEvent
      */
-    public function setHeadersSent()
+    public function set_headers_sent()
     {
-        $response                         = $this->getResponse();
-        $headersSent                      = $this->getParam('headersSent', []);
-        $responseObjectHash               = spl_object_hash($response);
-        $headersSent[$responseObjectHash] = true;
-        $this->setParam('headersSent', $headersSent);
-        $this->headersSent[$responseObjectHash] = true;
+        $response = $this->get_response();
+        $headers_sent = $this->get_param('headersSent', []);
+        $response_object_hash = spl_object_hash($response);
+        $headers_sent[$response_object_hash] = true;
+        $this->set_param('headersSent', $headers_sent);
+        $this->headers_sent[$response_object_hash] = true;
         return $this;
     }
-
     /**
      * @return bool
      */
-    public function headersSent()
+    public function headers_sent()
     {
-        $response = $this->getResponse();
-        if (isset($this->headersSent[spl_object_hash($response)])) {
+        $response = $this->get_response();
+        if (isset($this->headers_sent[spl_object_hash($response)])) {
             return true;
         }
         return false;

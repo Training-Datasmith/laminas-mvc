@@ -1,15 +1,13 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 namespace Laminas\Mvc\Service;
 
 // phpcs:ignore
-use Interop\Container\ContainerInterface;
-use Laminas\ServiceManager\Factory\FactoryInterface;
+use Interop\Container\Container_Interface;
+use Laminas\Service_Manager\Factory\Factory_Interface;
 use Laminas\View\Resolver as ViewResolver;
-
-class ViewResolverFactory implements FactoryInterface
+class View_Resolver_Factory implements Factory_Interface
 {
     /**
      * Create the aggregate view resolver
@@ -19,25 +17,16 @@ class ViewResolverFactory implements FactoryInterface
      *
      * @param  string $requestedName
      */
-    public function __invoke(ContainerInterface $container, $requestedName, ?array $options = null): \Laminas\View\Resolver\AggregateResolver
+    public function __invoke(Container_Interface $container, $requested_name, ?array $options = null): \Laminas\View\Resolver\Aggregate_Resolver
     {
-        $resolver = new ViewResolver\AggregateResolver();
-
+        $resolver = new View_Resolver\Aggregate_Resolver();
         /** @var ResolverInterface $mapResolver */
-        $mapResolver = $container->get('ViewTemplateMapResolver');
+        $map_resolver = $container->get('ViewTemplateMapResolver');
         /** @var ResolverInterface $pathResolver */
-        $pathResolver = $container->get('ViewTemplatePathStack');
+        $path_resolver = $container->get('ViewTemplatePathStack');
         /** @var ResolverInterface $prefixPathStackResolver */
-        $prefixPathStackResolver = $container->get('ViewPrefixPathStackResolver');
-
-        $resolver
-            ->attach($mapResolver)
-            ->attach($pathResolver)
-            ->attach($prefixPathStackResolver)
-            ->attach(new ViewResolver\RelativeFallbackResolver($mapResolver))
-            ->attach(new ViewResolver\RelativeFallbackResolver($pathResolver))
-            ->attach(new ViewResolver\RelativeFallbackResolver($prefixPathStackResolver));
-
+        $prefix_path_stack_resolver = $container->get('ViewPrefixPathStackResolver');
+        $resolver->attach($map_resolver)->attach($path_resolver)->attach($prefix_path_stack_resolver)->attach(new View_Resolver\Relative_Fallback_Resolver($map_resolver))->attach(new View_Resolver\Relative_Fallback_Resolver($path_resolver))->attach(new View_Resolver\Relative_Fallback_Resolver($prefix_path_stack_resolver));
         return $resolver;
     }
 }

@@ -1,40 +1,35 @@
 <?php
 
-declare(strict_types=1);
-
-namespace Laminas\Mvc\ResponseSender;
+declare (strict_types=1);
+namespace Laminas\Mvc\Response_Sender;
 
 use Laminas\Http\Response;
-
-class HttpResponseSender extends AbstractResponseSender
+class Http_Response_Sender extends Abstract_Response_Sender
 {
     /**
      * Send content
      */
-    public function sendContent(SendResponseEvent $event): static
+    public function send_content(Send_Response_Event $event): static
     {
-        if ($event->contentSent()) {
+        if ($event->content_sent()) {
             return $this;
         }
-        $response = $event->getResponse();
-        echo $response->getContent();
-        $event->setContentSent();
+        $response = $event->get_response();
+        echo $response->get_content();
+        $event->set_content_sent();
         return $this;
     }
-
     /**
      * Send HTTP response
      */
-    public function __invoke(SendResponseEvent $event): static
+    public function __invoke(Send_Response_Event $event): static
     {
-        $response = $event->getResponse();
-        if (! $response instanceof Response) {
+        $response = $event->get_response();
+        if (!$response instanceof Response) {
             return $this;
         }
-
-        $this->sendHeaders($event)
-             ->sendContent($event);
-        $event->stopPropagation(true);
+        $this->send_headers($event)->send_content($event);
+        $event->stop_propagation(true);
         return $this;
     }
 }

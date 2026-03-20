@@ -1,7 +1,6 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 namespace Laminas\Mvc\Controller;
 
 // phpcs:ignore
@@ -9,29 +8,25 @@ use function array_map;
 use function class_exists;
 use function class_implements;
 use function in_array;
-
-use Interop\Container\ContainerInterface;
-use Laminas\Console\Adapter\AdapterInterface as ConsoleAdapterInterface;
-use Laminas\Filter\FilterPluginManager;
-use Laminas\Hydrator\HydratorPluginManager;
-use Laminas\InputFilter\InputFilterPluginManager;
-use Laminas\Log\FilterPluginManager as LogFilterManager;
-use Laminas\Log\FormatterPluginManager as LogFormatterManager;
-use Laminas\Log\ProcessorPluginManager as LogProcessorManager;
-use Laminas\Log\WriterPluginManager as LogWriterManager;
+use Interop\Container\Container_Interface;
+use Laminas\Console\Adapter\Adapter_Interface as ConsoleAdapterInterface;
+use Laminas\Filter\Filter_Plugin_Manager;
+use Laminas\Hydrator\Hydrator_Plugin_Manager;
+use Laminas\Input_Filter\Input_Filter_Plugin_Manager;
+use Laminas\Log\Filter_Plugin_Manager as LogFilterManager;
+use Laminas\Log\Formatter_Plugin_Manager as LogFormatterManager;
+use Laminas\Log\Processor_Plugin_Manager as LogProcessorManager;
+use Laminas\Log\Writer_Plugin_Manager as LogWriterManager;
 use Laminas\Mvc\Exception\DomainException;
-use Laminas\Serializer\AdapterPluginManager as SerializerAdapterManager;
-use Laminas\ServiceManager\Exception\ServiceNotFoundException;
-use Laminas\ServiceManager\Factory\AbstractFactoryInterface;
-use Laminas\Stdlib\DispatchableInterface;
-
-use Laminas\Validator\ValidatorPluginManager;
+use Laminas\Serializer\Adapter_Plugin_Manager as SerializerAdapterManager;
+use Laminas\Service_Manager\Exception\Service_Not_Found_Exception;
+use Laminas\Service_Manager\Factory\Abstract_Factory_Interface;
+use Laminas\Stdlib\Dispatchable_Interface;
+use Laminas\Validator\Validator_Plugin_Manager;
 use ReflectionClass;
 use ReflectionNamedType;
 use ReflectionParameter;
-
 use function sprintf;
-
 /**
  * Reflection-based factory for controllers.
  *
@@ -79,7 +74,7 @@ use function sprintf;
  * `$options` passed to the factory are ignored in all cases, as we cannot
  * make assumptions about which argument(s) they might replace.
  */
-class LazyControllerAbstractFactory implements AbstractFactoryInterface
+class Lazy_Controller_Abstract_Factory implements Abstract_Factory_Interface
 {
     /**
      * Maps known classes/interfaces to the service that provides them; only
@@ -90,58 +85,35 @@ class LazyControllerAbstractFactory implements AbstractFactoryInterface
      *
      * @var string[]
      */
-    protected $aliases = [
-        ConsoleAdapterInterface::class  => 'ConsoleAdapter',
-        FilterPluginManager::class      => 'FilterManager',
-        HydratorPluginManager::class    => 'HydratorManager',
-        InputFilterPluginManager::class => 'InputFilterManager',
-        LogFilterManager::class         => 'LogFilterManager',
-        LogFormatterManager::class      => 'LogFormatterManager',
-        LogProcessorManager::class      => 'LogProcessorManager',
-        LogWriterManager::class         => 'LogWriterManager',
-        SerializerAdapterManager::class => 'SerializerAdapterManager',
-        ValidatorPluginManager::class   => 'ValidatorManager',
-    ];
-
+    protected $aliases = [Console_Adapter_Interface::class => 'ConsoleAdapter', Filter_Plugin_Manager::class => 'FilterManager', Hydrator_Plugin_Manager::class => 'HydratorManager', Input_Filter_Plugin_Manager::class => 'InputFilterManager', Log_Filter_Manager::class => 'LogFilterManager', Log_Formatter_Manager::class => 'LogFormatterManager', Log_Processor_Manager::class => 'LogProcessorManager', Log_Writer_Manager::class => 'LogWriterManager', Serializer_Adapter_Manager::class => 'SerializerAdapterManager', Validator_Plugin_Manager::class => 'ValidatorManager'];
     /**
      * {@inheritDoc}
      *
      * @return DispatchableInterface
      */
-    public function __invoke(ContainerInterface $container, $requestedName, ?array $options = null)
+    public function __invoke(Container_Interface $container, $requested_name, ?array $options = null)
     {
-        $reflectionClass = new ReflectionClass($requestedName);
-
-        if (null === ($constructor = $reflectionClass->getConstructor())) {
-            return new $requestedName();
+        $reflection_class = new ReflectionClass($requested_name);
+        if (null === $constructor = $reflection_class->get_constructor()) {
+            return new $requested_name();
         }
-
-        $reflectionParameters = $constructor->getParameters();
-
-        if (empty($reflectionParameters)) {
-            return new $requestedName();
+        $reflection_parameters = $constructor->get_parameters();
+        if (empty($reflection_parameters)) {
+            return new $requested_name();
         }
-
-        $parameters = array_map(
-            $this->resolveParameter($container, $requestedName),
-            $reflectionParameters
-        );
-
-        return new $requestedName(...$parameters);
+        $parameters = array_map($this->resolve_parameter($container, $requested_name), $reflection_parameters);
+        return new $requested_name(...$parameters);
     }
-
     /**
      * {@inheritDoc}
      */
-    public function canCreate(ContainerInterface $container, $requestedName)
+    public function can_create(Container_Interface $container, $requested_name)
     {
-        if (! class_exists($requestedName)) {
+        if (!class_exists($requested_name)) {
             return false;
         }
-
-        return in_array(DispatchableInterface::class, class_implements($requestedName), true);
+        return in_array(Dispatchable_Interface::class, class_implements($requested_name), true);
     }
-
     /**
      * Resolve a parameter to a value.
      *
@@ -150,7 +122,7 @@ class LazyControllerAbstractFactory implements AbstractFactoryInterface
      * @param string $requestedName
      * @return callable
      */
-    private function resolveParameter(ContainerInterface $container, $requestedName)
+    private function resolve_parameter(Container_Interface $container, $requested_name)
     {
         /**
          * @param ReflectionParameter $parameter
@@ -158,45 +130,28 @@ class LazyControllerAbstractFactory implements AbstractFactoryInterface
          * @throws ServiceNotFoundException If type-hinted parameter cannot be
          *   resolved to a service in the container.
          */
-        return function (ReflectionParameter $parameter) use ($container, $requestedName) {
-            $parameterType = $parameter->getType();
-            if ($parameterType === null) {
+        return function (ReflectionParameter $parameter) use ($container, $requested_name) {
+            $parameter_type = $parameter->get_type();
+            if ($parameter_type === null) {
                 return null;
             }
-            if (! $parameterType instanceof ReflectionNamedType) {
-                throw new DomainException(sprintf(
-                    'Unable to create controller "%s"; unable to resolve parameter "%s" with union type hint',
-                    $requestedName,
-                    $parameter->getName()
-                ));
+            if (!$parameter_type instanceof ReflectionNamedType) {
+                throw new DomainException(sprintf('Unable to create controller "%s"; unable to resolve parameter "%s" with union type hint', $requested_name, $parameter->get_name()));
             }
-
-            if ($parameterType->getName() === 'array') {
-                if (
-                    $parameter->getName() === 'config'
-                    && $container->has('config')
-                ) {
+            if ($parameter_type->get_name() === 'array') {
+                if ($parameter->get_name() === 'config' && $container->has('config')) {
                     return $container->get('config');
                 }
                 return [];
             }
-
-            if ($parameterType->isBuiltin()) {
+            if ($parameter_type->is_builtin()) {
                 return null;
             }
-
-            $type = $parameterType->getName();
+            $type = $parameter_type->get_name();
             $type = $this->aliases[$type] ?? $type;
-
-            if (! $container->has($type)) {
-                throw new ServiceNotFoundException(sprintf(
-                    'Unable to create controller "%s"; unable to resolve parameter "%s" using type hint "%s"',
-                    $requestedName,
-                    $parameter->getName(),
-                    $type
-                ));
+            if (!$container->has($type)) {
+                throw new Service_Not_Found_Exception(sprintf('Unable to create controller "%s"; unable to resolve parameter "%s" using type hint "%s"', $requested_name, $parameter->get_name(), $type));
             }
-
             return $container->get($type);
         };
     }

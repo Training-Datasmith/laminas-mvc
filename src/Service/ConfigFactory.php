@@ -1,15 +1,13 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 namespace Laminas\Mvc\Service;
 
 // phpcs:ignore
-use Interop\Container\ContainerInterface;
-use Laminas\ServiceManager\Factory\FactoryInterface;
+use Interop\Container\Container_Interface;
+use Laminas\Service_Manager\Factory\Factory_Interface;
 use Traversable;
-
-class ConfigFactory implements FactoryInterface
+class Config_Factory implements Factory_Interface
 {
     /**
      * Create the application configuration service
@@ -23,11 +21,11 @@ class ConfigFactory implements FactoryInterface
      * @param string $requestedName
      * @return array|Traversable
      */
-    public function __invoke(ContainerInterface $container, $requestedName, ?array $options = null)
+    public function __invoke(Container_Interface $container, $requested_name, ?array $options = null)
     {
-        $moduleManager = $container->get('ModuleManager');
-        $moduleManager->loadModules();
-        $moduleParams = $moduleManager->getEvent()->getParams();
-        return $moduleParams['configListener']->getMergedConfig(false);
+        $module_manager = $container->get('ModuleManager');
+        $module_manager->load_modules();
+        $module_params = $module_manager->get_event()->get_params();
+        return $module_params['configListener']->get_merged_config(false);
     }
 }

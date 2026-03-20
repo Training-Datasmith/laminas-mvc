@@ -1,23 +1,21 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 namespace Laminas\Mvc\Service;
 
 // phpcs:ignore
-use Interop\Container\ContainerInterface;
-use Laminas\EventManager\EventManager;
-use Laminas\EventManager\EventManagerAwareInterface;
-use Laminas\EventManager\EventManagerInterface;
-use Laminas\EventManager\SharedEventManager;
-use Laminas\EventManager\SharedEventManagerInterface;
-use Laminas\ModuleManager\Listener\ServiceListener;
-use Laminas\ModuleManager\ModuleManager;
-use Laminas\ServiceManager\Config;
-use Laminas\ServiceManager\ServiceManager;
-use Laminas\Stdlib\ArrayUtils;
-
-class ServiceManagerConfig extends Config
+use Interop\Container\Container_Interface;
+use Laminas\Event_Manager\Event_Manager;
+use Laminas\Event_Manager\Event_Manager_Aware_Interface;
+use Laminas\Event_Manager\Event_Manager_Interface;
+use Laminas\Event_Manager\Shared_Event_Manager;
+use Laminas\Event_Manager\Shared_Event_Manager_Interface;
+use Laminas\Module_Manager\Listener\Service_Listener;
+use Laminas\Module_Manager\Module_Manager;
+use Laminas\Service_Manager\Config;
+use Laminas\Service_Manager\Service_Manager;
+use Laminas\Stdlib\Array_Utils;
+class Service_Manager_Config extends Config
 {
     /**
      * Default service configuration.
@@ -27,32 +25,7 @@ class ServiceManagerConfig extends Config
      *
      * @var array
      */
-    protected $config = [
-        'abstract_factories' => [],
-        'aliases'            => [
-            'EventManagerInterface'            => EventManager::class,
-            EventManagerInterface::class       => 'EventManager',
-            ModuleManager::class               => 'ModuleManager',
-            ServiceListener::class             => 'ServiceListener',
-            SharedEventManager::class          => 'SharedEventManager',
-            'SharedEventManagerInterface'      => 'SharedEventManager',
-            SharedEventManagerInterface::class => 'SharedEventManager',
-        ],
-        'delegators'         => [],
-        'factories'          => [
-            'EventManager'    => EventManagerFactory::class,
-            'ModuleManager'   => ModuleManagerFactory::class,
-            'ServiceListener' => ServiceListenerFactory::class,
-        ],
-        'lazy_services'      => [],
-        'initializers'       => [],
-        'invokables'         => [],
-        'services'           => [],
-        'shared'             => [
-            'EventManager' => false,
-        ],
-    ];
-
+    protected $config = ['abstract_factories' => [], 'aliases' => ['EventManagerInterface' => Event_Manager::class, Event_Manager_Interface::class => 'EventManager', Module_Manager::class => 'ModuleManager', Service_Listener::class => 'ServiceListener', Shared_Event_Manager::class => 'SharedEventManager', 'SharedEventManagerInterface' => 'SharedEventManager', Shared_Event_Manager_Interface::class => 'SharedEventManager'], 'delegators' => [], 'factories' => ['EventManager' => Event_Manager_Factory::class, 'ModuleManager' => Module_Manager_Factory::class, 'ServiceListener' => Service_Listener_Factory::class], 'lazy_services' => [], 'initializers' => [], 'invokables' => [], 'services' => [], 'shared' => ['EventManager' => false]];
     /**
      * Constructor
      *
@@ -64,37 +37,28 @@ class ServiceManagerConfig extends Config
      */
     public function __construct(array $config = [])
     {
-        $this->config['factories']['ServiceManager'] = static fn ($container) => $container;
-
-        $this->config['factories']['SharedEventManager'] = static fn (): SharedEventManager => new SharedEventManager();
-
-        $this->config['initializers'] = ArrayUtils::merge($this->config['initializers'], [
-            'EventManagerAwareInitializer' => static function ($first, $second): void {
-                if ($first instanceof ContainerInterface) {
-                    $container = $first;
-                    $instance  = $second;
-                } else {
-                    $container = $second;
-                    $instance  = $first;
-                }
-                if (! $instance instanceof EventManagerAwareInterface) {
-                    return;
-                }
-                $eventManager = $instance->getEventManager();
-                // If the instance has an EM WITH an SEM composed, do nothing.
-                if (
-                    $eventManager instanceof EventManagerInterface
-                    && $eventManager->getSharedManager() instanceof SharedEventManagerInterface
-                ) {
-                    return;
-                }
-                $instance->setEventManager($container->get('EventManager'));
-            },
-        ]);
-
+        $this->config['factories']['ServiceManager'] = static fn($container) => $container;
+        $this->config['factories']['SharedEventManager'] = static fn(): Shared_Event_Manager => new Shared_Event_Manager();
+        $this->config['initializers'] = Array_Utils::merge($this->config['initializers'], ['EventManagerAwareInitializer' => static function ($first, $second): void {
+            if ($first instanceof Container_Interface) {
+                $container = $first;
+                $instance = $second;
+            } else {
+                $container = $second;
+                $instance = $first;
+            }
+            if (!$instance instanceof Event_Manager_Aware_Interface) {
+                return;
+            }
+            $event_manager = $instance->get_event_manager();
+            // If the instance has an EM WITH an SEM composed, do nothing.
+            if ($event_manager instanceof Event_Manager_Interface && $event_manager->get_shared_manager() instanceof Shared_Event_Manager_Interface) {
+                return;
+            }
+            $instance->set_event_manager($container->get('EventManager'));
+        }]);
         parent::__construct($config);
     }
-
     /**
      * Configure service container.
      *
@@ -106,25 +70,22 @@ class ServiceManagerConfig extends Config
      *
      * @return ServiceManager
      */
-    public function configureServiceManager(ServiceManager $services)
+    public function configure_service_manager(Service_Manager $services)
     {
-        $this->config['services'][ServiceManager::class] = $services;
-
+        $this->config['services'][Service_Manager::class] = $services;
         // This is invoked as part of the bootstrapping process, and requires
         // the ability to override services.
-        $services->setAllowOverride(true);
-        parent::configureServiceManager($services);
-        $services->setAllowOverride(false);
-
+        $services->set_allow_override(true);
+        parent::configure_service_manager($services);
+        $services->set_allow_override(false);
         return $services;
     }
-
     /**
      * Return all service configuration
      *
      * @return array
      */
-    public function toArray()
+    public function to_array()
     {
         return $this->config;
     }

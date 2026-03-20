@@ -1,20 +1,16 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 namespace Laminas\Mvc;
 
 use function array_merge;
 use function array_unique;
-
-use Laminas\EventManager\EventManagerAwareInterface;
-use Laminas\EventManager\EventManagerInterface;
-use Laminas\Mvc\Service\ServiceManagerConfig;
-use Laminas\ServiceManager\ServiceManager;
-
-use Laminas\Stdlib\RequestInterface;
-use Laminas\Stdlib\ResponseInterface;
-
+use Laminas\Event_Manager\Event_Manager_Aware_Interface;
+use Laminas\Event_Manager\Event_Manager_Interface;
+use Laminas\Mvc\Service\Service_Manager_Config;
+use Laminas\Service_Manager\Service_Manager;
+use Laminas\Stdlib\Request_Interface;
+use Laminas\Stdlib\Response_Interface;
 /**
  * Main application class for invoking applications
  *
@@ -45,71 +41,50 @@ use Laminas\Stdlib\ResponseInterface;
  * if you wish to setup your own listeners and/or workflow; alternately, you
  * can simply extend the class to override such behavior.
  */
-class Application implements
-    ApplicationInterface,
-    EventManagerAwareInterface
+class Application implements Application_Interface, Event_Manager_Aware_Interface
 {
     public const ERROR_CONTROLLER_CANNOT_DISPATCH = 'error-controller-cannot-dispatch';
-    public const ERROR_CONTROLLER_NOT_FOUND       = 'error-controller-not-found';
-    public const ERROR_CONTROLLER_INVALID         = 'error-controller-invalid';
-    public const ERROR_EXCEPTION                  = 'error-exception';
-    public const ERROR_ROUTER_NO_MATCH            = 'error-router-no-match';
+    public const ERROR_CONTROLLER_NOT_FOUND = 'error-controller-not-found';
+    public const ERROR_CONTROLLER_INVALID = 'error-controller-invalid';
+    public const ERROR_EXCEPTION = 'error-exception';
+    public const ERROR_ROUTER_NO_MATCH = 'error-router-no-match';
     public const ERROR_MIDDLEWARE_CANNOT_DISPATCH = 'error-middleware-cannot-dispatch';
-
     /**
      * Default application event listeners
      *
      * @var array
      */
-    protected $defaultListeners = [
-        'RouteListener',
-        'MiddlewareListener',
-        'DispatchListener',
-        'HttpMethodListener',
-        'ViewManager',
-        'SendResponseListener',
-    ];
-
+    protected $default_listeners = ['RouteListener', 'MiddlewareListener', 'DispatchListener', 'HttpMethodListener', 'ViewManager', 'SendResponseListener'];
     /**
      * MVC event token
      *
      * @var MvcEvent
      */
     protected $event;
-
     /** @var EventManagerInterface */
     protected $events;
-
     /** @var RequestInterface */
     protected $request;
-
     /** @var ResponseInterface */
     protected $response;
-
     /**
      * Constructor
      */
-    public function __construct(
-        protected ServiceManager $serviceManager,
-        ?EventManagerInterface $events = null,
-        ?RequestInterface $request = null,
-        ?ResponseInterface $response = null
-    ) {
-        $this->setEventManager($events ?: $serviceManager->get('EventManager'));
-        $this->request  = $request ?: $serviceManager->get('Request');
-        $this->response = $response ?: $serviceManager->get('Response');
+    public function __construct(protected Service_Manager $service_manager, ?Event_Manager_Interface $events = null, ?Request_Interface $request = null, ?Response_Interface $response = null)
+    {
+        $this->set_event_manager($events ?: $service_manager->get('EventManager'));
+        $this->request = $request ?: $service_manager->get('Request');
+        $this->response = $response ?: $service_manager->get('Response');
     }
-
     /**
      * Retrieve the application configuration
      *
      * @return array|object
      */
-    public function getConfig()
+    public function get_config()
     {
-        return $this->serviceManager->get('config');
+        return $this->service_manager->get('config');
     }
-
     /**
      * Bootstrap the application
      *
@@ -121,82 +96,68 @@ class Application implements
      */
     public function bootstrap(array $listeners = []): static
     {
-        $serviceManager = $this->serviceManager;
-        $events         = $this->events;
-
+        $service_manager = $this->service_manager;
+        $events = $this->events;
         // Setup default listeners
-        $listeners = array_unique(array_merge($this->defaultListeners, $listeners));
-
+        $listeners = array_unique(array_merge($this->default_listeners, $listeners));
         foreach ($listeners as $listener) {
-            $serviceManager->get($listener)->attach($events);
+            $service_manager->get($listener)->attach($events);
         }
-
         // Setup MVC Event
-        $this->event = $event  = new MvcEvent();
-        $event->setName(MvcEvent::EVENT_BOOTSTRAP);
-        $event->setTarget($this);
-        $event->setApplication($this);
-        $event->setRequest($this->request);
-        $event->setResponse($this->response);
-        $event->setRouter($serviceManager->get('Router'));
-
+        $this->event = $event = new Mvc_Event();
+        $event->set_name(Mvc_Event::EVENT_BOOTSTRAP);
+        $event->set_target($this);
+        $event->set_application($this);
+        $event->set_request($this->request);
+        $event->set_response($this->response);
+        $event->set_router($service_manager->get('Router'));
         // Trigger bootstrap events
-        $events->triggerEvent($event);
-
+        $events->trigger_event($event);
         return $this;
     }
-
     /**
      * Retrieve the service manager
      */
-    public function getServiceManager(): \Laminas\ServiceManager\ServiceManager
+    public function get_service_manager(): \Laminas\Service_Manager\Service_Manager
     {
-        return $this->serviceManager;
+        return $this->service_manager;
     }
-
     /**
      * Get the request object
      *
      * @return RequestInterface
      */
-    public function getRequest()
+    public function get_request()
     {
         return $this->request;
     }
-
     /**
      * Get the response object
      *
      * @return ResponseInterface
      */
-    public function getResponse()
+    public function get_response()
     {
         return $this->response;
     }
-
     /**
      * Get the MVC event instance
      *
      * @return MvcEvent
      */
-    public function getMvcEvent()
+    public function get_mvc_event()
     {
         return $this->event;
     }
-
     /**
      * Set the event manager instance
      */
-    public function setEventManager(EventManagerInterface $eventManager): static
+    public function set_event_manager(Event_Manager_Interface $event_manager): static
     {
-        $eventManager->setIdentifiers([
-            self::class,
-            static::class,
-        ]);
-        $this->events = $eventManager;
+        $event_manager->set_identifiers([self::class, static::class]);
+        $this->events = $event_manager;
         return $this;
     }
-
     /**
      * Retrieve the event manager
      *
@@ -204,11 +165,10 @@ class Application implements
      *
      * @return EventManagerInterface
      */
-    public function getEventManager()
+    public function get_event_manager()
     {
         return $this->events;
     }
-
     /**
      * Static method for quick and easy initialization of the Application.
      *
@@ -230,26 +190,20 @@ class Application implements
     public static function init(array $configuration = [])
     {
         // Prepare the service manager
-        $smConfig = $configuration['service_manager'] ?? [];
-        $smConfig = new ServiceManagerConfig($smConfig);
-
-        $serviceManager = new ServiceManager();
-        $smConfig->configureServiceManager($serviceManager);
-        $serviceManager->setService('ApplicationConfig', $configuration);
-
+        $sm_config = $configuration['service_manager'] ?? [];
+        $sm_config = new Service_Manager_Config($sm_config);
+        $service_manager = new Service_Manager();
+        $sm_config->configure_service_manager($service_manager);
+        $service_manager->set_service('ApplicationConfig', $configuration);
         // Load modules
-        $serviceManager->get('ModuleManager')->loadModules();
-
+        $service_manager->get('ModuleManager')->load_modules();
         // Prepare list of listeners to bootstrap
-        $listenersFromAppConfig     = $configuration['listeners'] ?? [];
-        $config                     = $serviceManager->get('config');
-        $listenersFromConfigService = $config['listeners'] ?? [];
-
-        $listeners = array_unique(array_merge($listenersFromConfigService, $listenersFromAppConfig));
-
-        return $serviceManager->get('Application')->bootstrap($listeners);
+        $listeners_from_app_config = $configuration['listeners'] ?? [];
+        $config = $service_manager->get('config');
+        $listeners_from_config_service = $config['listeners'] ?? [];
+        $listeners = array_unique(array_merge($listeners_from_config_service, $listeners_from_app_config));
+        return $service_manager->get('Application')->bootstrap($listeners);
     }
-
     /**
      * Run the application
      *
@@ -269,81 +223,77 @@ class Application implements
     public function run()
     {
         $events = $this->events;
-        $event  = $this->event;
-
+        $event = $this->event;
         // Define callback used to determine whether or not to short-circuit
-        $shortCircuit = static function ($r) use ($event): bool {
-            if ($r instanceof ResponseInterface) {
+        $short_circuit = static function ($r) use ($event): bool {
+            if ($r instanceof Response_Interface) {
                 return true;
             }
-            if ($event->getError()) {
+            if ($event->get_error()) {
                 return true;
             }
             return false;
         };
-
         // Trigger route event
-        $event->setName(MvcEvent::EVENT_ROUTE);
-        $event->stopPropagation(false); // Clear before triggering
-        $result = $events->triggerEventUntil($shortCircuit, $event);
+        $event->set_name(Mvc_Event::EVENT_ROUTE);
+        $event->stop_propagation(false);
+        // Clear before triggering
+        $result = $events->trigger_event_until($short_circuit, $event);
         if ($result->stopped()) {
             $response = $result->last();
-            if ($response instanceof ResponseInterface) {
-                $event->setName(MvcEvent::EVENT_FINISH);
-                $event->setTarget($this);
-                $event->setResponse($response);
-                $event->stopPropagation(false); // Clear before triggering
-                $events->triggerEvent($event);
+            if ($response instanceof Response_Interface) {
+                $event->set_name(Mvc_Event::EVENT_FINISH);
+                $event->set_target($this);
+                $event->set_response($response);
+                $event->stop_propagation(false);
+                // Clear before triggering
+                $events->trigger_event($event);
                 $this->response = $response;
                 return $this;
             }
         }
-
-        if ($event->getError()) {
-            return $this->completeRequest($event);
+        if ($event->get_error()) {
+            return $this->complete_request($event);
         }
-
         // Trigger dispatch event
-        $event->setName(MvcEvent::EVENT_DISPATCH);
-        $event->stopPropagation(false); // Clear before triggering
-        $result = $events->triggerEventUntil($shortCircuit, $event);
-
+        $event->set_name(Mvc_Event::EVENT_DISPATCH);
+        $event->stop_propagation(false);
+        // Clear before triggering
+        $result = $events->trigger_event_until($short_circuit, $event);
         // Complete response
         $response = $result->last();
-        if ($response instanceof ResponseInterface) {
-            $event->setName(MvcEvent::EVENT_FINISH);
-            $event->setTarget($this);
-            $event->setResponse($response);
-            $event->stopPropagation(false); // Clear before triggering
-            $events->triggerEvent($event);
+        if ($response instanceof Response_Interface) {
+            $event->set_name(Mvc_Event::EVENT_FINISH);
+            $event->set_target($this);
+            $event->set_response($response);
+            $event->stop_propagation(false);
+            // Clear before triggering
+            $events->trigger_event($event);
             $this->response = $response;
             return $this;
         }
-
         $response = $this->response;
-        $event->setResponse($response);
-        return $this->completeRequest($event);
+        $event->set_response($response);
+        return $this->complete_request($event);
     }
-
     /**
      * Complete the request
      *
      * Triggers "render" and "finish" events, and returns response from
      * event object.
      */
-    protected function completeRequest(MvcEvent $event): static
+    protected function complete_request(Mvc_Event $event): static
     {
         $events = $this->events;
-        $event->setTarget($this);
-
-        $event->setName(MvcEvent::EVENT_RENDER);
-        $event->stopPropagation(false); // Clear before triggering
-        $events->triggerEvent($event);
-
-        $event->setName(MvcEvent::EVENT_FINISH);
-        $event->stopPropagation(false); // Clear before triggering
-        $events->triggerEvent($event);
-
+        $event->set_target($this);
+        $event->set_name(Mvc_Event::EVENT_RENDER);
+        $event->stop_propagation(false);
+        // Clear before triggering
+        $events->trigger_event($event);
+        $event->set_name(Mvc_Event::EVENT_FINISH);
+        $event->stop_propagation(false);
+        // Clear before triggering
+        $events->trigger_event($event);
         return $this;
     }
 }

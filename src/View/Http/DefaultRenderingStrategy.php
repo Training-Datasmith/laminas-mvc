@@ -1,113 +1,98 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 namespace Laminas\Mvc\View\Http;
 
 use Exception;
-use Laminas\EventManager\AbstractListenerAggregate;
-use Laminas\EventManager\EventManagerInterface;
+use Laminas\Event_Manager\Abstract_Listener_Aggregate;
+use Laminas\Event_Manager\Event_Manager_Interface;
 use Laminas\Mvc\Application;
-use Laminas\Mvc\MvcEvent;
-use Laminas\Stdlib\ResponseInterface as Response;
-use Laminas\View\Model\ModelInterface as ViewModel;
+use Laminas\Mvc\Mvc_Event;
+use Laminas\Stdlib\Response_Interface as Response;
+use Laminas\View\Model\Model_Interface as ViewModel;
 use Laminas\View\View;
 use Throwable;
-
-class DefaultRenderingStrategy extends AbstractListenerAggregate
+class Default_Rendering_Strategy extends Abstract_Listener_Aggregate
 {
     /**
      * Layout template - template used in root ViewModel of MVC event.
      *
      * @var string
      */
-    protected $layoutTemplate = 'layout';
-
+    protected $layout_template = 'layout';
     /**
      * Set view
      */
     public function __construct(protected View $view)
     {
     }
-
     /**
      * {@inheritDoc}
      */
-    public function attach(EventManagerInterface $events, $priority = 1): void
+    public function attach(Event_Manager_Interface $events, $priority = 1): void
     {
-        $this->listeners[] = $events->attach(MvcEvent::EVENT_RENDER, $this->render(...), -10000);
-        $this->listeners[] = $events->attach(MvcEvent::EVENT_RENDER_ERROR, $this->render(...), -10000);
+        $this->listeners[] = $events->attach(Mvc_Event::EVENT_RENDER, $this->render(...), -10000);
+        $this->listeners[] = $events->attach(Mvc_Event::EVENT_RENDER_ERROR, $this->render(...), -10000);
     }
-
     /**
      * Set layout template value
      *
      * @param  string $layoutTemplate
      * @return DefaultRenderingStrategy
      */
-    public function setLayoutTemplate($layoutTemplate)
+    public function set_layout_template($layout_template)
     {
-        $this->layoutTemplate = (string) $layoutTemplate;
+        $this->layout_template = (string) $layout_template;
         return $this;
     }
-
     /**
      * Get layout template value
      *
      * @return string
      */
-    public function getLayoutTemplate()
+    public function get_layout_template()
     {
-        return $this->layoutTemplate;
+        return $this->layout_template;
     }
-
     /**
      * Render the view
      *
      * @return Response|null
      * @throws Exception|Throwable
      */
-    public function render(MvcEvent $e)
+    public function render(Mvc_Event $e)
     {
-        $result = $e->getResult();
+        $result = $e->get_result();
         if ($result instanceof Response) {
             return $result;
         }
-
         // Martial arguments
-        $request   = $e->getRequest();
-        $response  = $e->getResponse();
-        $viewModel = $e->getViewModel();
-        if (! $viewModel instanceof ViewModel) {
+        $request = $e->get_request();
+        $response = $e->get_response();
+        $view_model = $e->get_view_model();
+        if (!$view_model instanceof View_Model) {
             return;
         }
-
         $view = $this->view;
-        $view->setRequest($request);
-        $view->setResponse($response);
-
-        $caughtException = null;
-
+        $view->set_request($request);
+        $view->set_response($response);
+        $caught_exception = null;
         try {
-            $view->render($viewModel);
+            $view->render($view_model);
         } catch (Throwable $ex) {
-            $caughtException = $ex;
+            $caught_exception = $ex;
         }
-
-        if ($caughtException !== null) {
-            if ($e->getName() === MvcEvent::EVENT_RENDER_ERROR) {
-                throw $caughtException;
+        if ($caught_exception !== null) {
+            if ($e->get_name() === Mvc_Event::EVENT_RENDER_ERROR) {
+                throw $caught_exception;
             }
-
-            $application = $e->getApplication();
-            $events      = $application->getEventManager();
-
-            $e->setError(Application::ERROR_EXCEPTION);
-            $e->setParam('exception', $caughtException);
-            $e->setName(MvcEvent::EVENT_RENDER_ERROR);
-            $events->triggerEvent($e);
+            $application = $e->get_application();
+            $events = $application->get_event_manager();
+            $e->set_error(Application::ERROR_EXCEPTION);
+            $e->set_param('exception', $caught_exception);
+            $e->set_name(Mvc_Event::EVENT_RENDER_ERROR);
+            $events->trigger_event($e);
         }
-
         return $response;
     }
 }

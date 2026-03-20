@@ -1,81 +1,67 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 namespace Laminas\Mvc\Controller;
 
 use Laminas\Mvc\Exception;
 use Laminas\Mvc\Exception\DomainException;
-use Laminas\Mvc\MvcEvent;
-use Laminas\View\Model\ViewModel;
-
+use Laminas\Mvc\Mvc_Event;
+use Laminas\View\Model\View_Model;
 use function method_exists;
-
 /**
  * Basic action controller
  */
-abstract class AbstractActionController extends AbstractController
+abstract class Abstract_Action_Controller extends Abstract_Controller
 {
     /**
      * {@inheritDoc}
      */
-    protected $eventIdentifier = self::class;
-
+    protected $event_identifier = self::class;
     /**
      * Default action if none provided
      *
      * @return ViewModel
      */
-    public function indexAction()
+    public function index_action()
     {
-        return new ViewModel([
-            'content' => 'Placeholder page',
-        ]);
+        return new View_Model(['content' => 'Placeholder page']);
     }
-
     /**
      * Action called if matched action does not exist
      *
      * @return ViewModel
      */
-    public function notFoundAction()
+    public function not_found_action()
     {
-        $event      = $this->getEvent();
-        $routeMatch = $event->getRouteMatch();
-        $routeMatch->setParam('action', 'not-found');
-
+        $event = $this->get_event();
+        $route_match = $event->get_route_match();
+        $route_match->set_param('action', 'not-found');
         $helper = $this->plugin('createHttpNotFoundModel');
-        return $helper($event->getResponse());
+        return $helper($event->get_response());
     }
-
     /**
      * Execute the request
      *
      * @return mixed
      * @throws Exception\DomainException
      */
-    public function onDispatch(MvcEvent $e)
+    public function on_dispatch(Mvc_Event $e)
     {
-        $routeMatch = $e->getRouteMatch();
-        if (! $routeMatch) {
+        $route_match = $e->get_route_match();
+        if (!$route_match) {
             /**
              * @todo Determine requirements for when route match is missing.
              *       Potentially allow pulling directly from request metadata?
              */
             throw new DomainException('Missing route matches; unsure how to retrieve action');
         }
-
-        $action = $routeMatch->getParam('action', 'not-found');
-        $method = static::getMethodFromAction($action);
-
-        if (! method_exists($this, $method)) {
+        $action = $route_match->get_param('action', 'not-found');
+        $method = static::get_method_from_action($action);
+        if (!method_exists($this, $method)) {
             $method = 'notFoundAction';
         }
-
-        $actionResponse = $this->$method();
-
-        $e->setResult($actionResponse);
-
-        return $actionResponse;
+        $action_response = $this->{$method}();
+        $e->set_result($action_response);
+        return $action_response;
     }
 }

@@ -1,36 +1,31 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 namespace Laminas\Mvc\Exception;
 
 use function sprintf;
-
 /**
  * @deprecated Since 3.2.0
  */
-class InvalidMiddlewareException extends RuntimeException
+class Invalid_Middleware_Exception extends RuntimeException
 {
-    private ?string $middlewareName = null;
-
+    private ?string $middleware_name = null;
     /**
      * @param string $middlewareName
      */
-    public static function fromMiddlewareName($middlewareName): self
+    public static function from_middleware_name($middleware_name): self
     {
-        $middlewareName           = (string) $middlewareName;
-        $instance                 = new self(sprintf('Cannot dispatch middleware %s', $middlewareName));
-        $instance->middlewareName = $middlewareName;
+        $middleware_name = (string) $middleware_name;
+        $instance = new self(sprintf('Cannot dispatch middleware %s', $middleware_name));
+        $instance->middleware_name = $middleware_name;
         return $instance;
     }
-
-    public static function fromNull(): self
+    public static function from_null(): self
     {
         return new self('Middleware name cannot be null');
     }
-
-    public function toMiddlewareName(): string
+    public function to_middleware_name(): string
     {
-        return $this->middlewareName ?? '';
+        return $this->middleware_name ?? '';
     }
 }

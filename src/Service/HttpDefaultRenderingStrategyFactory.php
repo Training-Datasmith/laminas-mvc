@@ -1,40 +1,34 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 namespace Laminas\Mvc\Service;
 
 // phpcs:ignore
-use Interop\Container\ContainerInterface;
-use Laminas\Mvc\View\Http\DefaultRenderingStrategy;
-use Laminas\ServiceManager\Factory\FactoryInterface;
+use Interop\Container\Container_Interface;
+use Laminas\Mvc\View\Http\Default_Rendering_Strategy;
+use Laminas\Service_Manager\Factory\Factory_Interface;
 use Laminas\View\View;
-
-class HttpDefaultRenderingStrategyFactory implements FactoryInterface
+class Http_Default_Rendering_Strategy_Factory implements Factory_Interface
 {
-    use HttpViewManagerConfigTrait;
-
+    use Http_View_Manager_Config_Trait;
     /**
      * @param  string $requestedName
      */
-    public function __invoke(ContainerInterface $container, $requestedName, ?array $options = null): \Laminas\Mvc\View\Http\DefaultRenderingStrategy
+    public function __invoke(Container_Interface $container, $requested_name, ?array $options = null): \Laminas\Mvc\View\Http\Default_Rendering_Strategy
     {
-        $strategy = new DefaultRenderingStrategy($container->get(View::class));
-        $config   = $this->getConfig($container);
-
-        $this->injectLayoutTemplate($strategy, $config);
-
+        $strategy = new Default_Rendering_Strategy($container->get(View::class));
+        $config = $this->get_config($container);
+        $this->inject_layout_template($strategy, $config);
         return $strategy;
     }
-
     /**
      * Inject layout template.
      *
      * Uses layout template from configuration; if none available, defaults to "layout/layout".
      */
-    private function injectLayoutTemplate(DefaultRenderingStrategy $strategy, array $config): void
+    private function inject_layout_template(Default_Rendering_Strategy $strategy, array $config): void
     {
         $layout = $config['layout'] ?? 'layout/layout';
-        $strategy->setLayoutTemplate($layout);
+        $strategy->set_layout_template($layout);
     }
 }

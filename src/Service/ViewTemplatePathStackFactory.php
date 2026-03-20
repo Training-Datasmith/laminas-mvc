@@ -1,19 +1,14 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 namespace Laminas\Mvc\Service;
 
 // phpcs:ignore
-use Interop\Container\ContainerInterface;
-
+use Interop\Container\Container_Interface;
 use function is_array;
-
-use Laminas\ServiceManager\Factory\FactoryInterface;
-
+use Laminas\Service_Manager\Factory\Factory_Interface;
 use Laminas\View\Resolver as ViewResolver;
-
-class ViewTemplatePathStackFactory implements FactoryInterface
+class View_Template_Path_Stack_Factory implements Factory_Interface
 {
     /**
      * Create the template path stack view resolver
@@ -24,24 +19,21 @@ class ViewTemplatePathStackFactory implements FactoryInterface
      *
      * @param  string $requestedName
      */
-    public function __invoke(ContainerInterface $container, $requestedName, ?array $options = null): \Laminas\View\Resolver\TemplatePathStack
+    public function __invoke(Container_Interface $container, $requested_name, ?array $options = null): \Laminas\View\Resolver\Template_Path_Stack
     {
         $config = $container->get('config');
-
-        $templatePathStack = new ViewResolver\TemplatePathStack();
-
+        $template_path_stack = new View_Resolver\Template_Path_Stack();
         if (is_array($config) && isset($config['view_manager'])) {
             $config = $config['view_manager'];
             if (is_array($config)) {
                 if (isset($config['template_path_stack'])) {
-                    $templatePathStack->addPaths($config['template_path_stack']);
+                    $template_path_stack->add_paths($config['template_path_stack']);
                 }
                 if (isset($config['default_template_suffix'])) {
-                    $templatePathStack->setDefaultSuffix($config['default_template_suffix']);
+                    $template_path_stack->set_default_suffix($config['default_template_suffix']);
                 }
             }
         }
-
-        return $templatePathStack;
+        return $template_path_stack;
     }
 }

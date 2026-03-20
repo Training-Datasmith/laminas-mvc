@@ -1,23 +1,21 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 namespace Laminas\Mvc\Service;
 
 // phpcs:ignore
-use Interop\Container\ContainerInterface;
-use Laminas\Mvc\DispatchListener;
-use Laminas\ServiceManager\Factory\FactoryInterface;
-
-class DispatchListenerFactory implements FactoryInterface
+use Interop\Container\Container_Interface;
+use Laminas\Mvc\Dispatch_Listener;
+use Laminas\Service_Manager\Factory\Factory_Interface;
+class Dispatch_Listener_Factory implements Factory_Interface
 {
     /**
      * Create the default dispatch listener.
      *
      * @param  string $requestedName
      */
-    public function __invoke(ContainerInterface $container, $requestedName, ?array $options = null): \Laminas\Mvc\DispatchListener
+    public function __invoke(Container_Interface $container, $requested_name, ?array $options = null): \Laminas\Mvc\Dispatch_Listener
     {
-        return new DispatchListener($container->get('ControllerManager'));
+        return new Dispatch_Listener($container->get('ControllerManager'));
     }
 }

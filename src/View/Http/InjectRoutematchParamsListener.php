@@ -1,15 +1,13 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 namespace Laminas\Mvc\View\Http;
 
-use Laminas\EventManager\AbstractListenerAggregate;
-use Laminas\EventManager\EventManagerInterface;
+use Laminas\Event_Manager\Abstract_Listener_Aggregate;
+use Laminas\Event_Manager\Event_Manager_Interface;
 use Laminas\Http\Request as HttpRequest;
-use Laminas\Mvc\MvcEvent;
-
-class InjectRoutematchParamsListener extends AbstractListenerAggregate
+use Laminas\Mvc\Mvc_Event;
+class Inject_Routematch_Params_Listener extends Abstract_Listener_Aggregate
 {
     /**
      * Should request params overwrite existing request params?
@@ -17,60 +15,52 @@ class InjectRoutematchParamsListener extends AbstractListenerAggregate
      * @var bool
      */
     protected $overwrite = true;
-
     /**
      * {@inheritDoc}
      */
-    public function attach(EventManagerInterface $events, $priority = 1): void
+    public function attach(Event_Manager_Interface $events, $priority = 1): void
     {
-        $this->listeners[] = $events->attach(MvcEvent::EVENT_DISPATCH, $this->injectParams(...), 90);
+        $this->listeners[] = $events->attach(Mvc_Event::EVENT_DISPATCH, $this->inject_params(...), 90);
     }
-
     /**
      * Take parameters from RouteMatch and inject them into the request.
      */
-    public function injectParams(MvcEvent $e): void
+    public function inject_params(Mvc_Event $e): void
     {
-        $routeMatchParams = $e->getRouteMatch()->getParams();
-        $request          = $e->getRequest();
-
-        if (! $request instanceof HttpRequest) {
+        $route_match_params = $e->get_route_match()->get_params();
+        $request = $e->get_request();
+        if (!$request instanceof Http_Request) {
             // unsupported request type
             return;
         }
-
         $params = $request->get();
-
         if ($this->overwrite) {
             // Overwrite existing parameters, or create new ones if not present.
-            foreach ($routeMatchParams as $key => $val) {
-                $params->$key = $val;
+            foreach ($route_match_params as $key => $val) {
+                $params->{$key} = $val;
             }
             return;
         }
-
         // Only create new parameters.
-        foreach ($routeMatchParams as $key => $val) {
-            if (! $params->offsetExists($key)) {
-                $params->$key = $val;
+        foreach ($route_match_params as $key => $val) {
+            if (!$params->offsetExists($key)) {
+                $params->{$key} = $val;
             }
         }
     }
-
     /**
      * Should RouteMatch parameters replace existing Request params?
      *
      * @param  bool $overwrite
      */
-    public function setOverwrite($overwrite): void
+    public function set_overwrite($overwrite): void
     {
         $this->overwrite = $overwrite;
     }
-
     /**
      * @return bool
      */
-    public function getOverwrite()
+    public function get_overwrite()
     {
         return $this->overwrite;
     }

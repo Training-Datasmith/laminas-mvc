@@ -1,24 +1,21 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 namespace Laminas\Mvc\Controller;
 
-use Laminas\Diactoros\ServerRequest;
-use Laminas\EventManager\EventManagerInterface;
+use Laminas\Diactoros\Server_Request;
+use Laminas\Event_Manager\Event_Manager_Interface;
 use Laminas\Http\Request;
-use Laminas\Mvc\Exception\ReachedFinalHandlerException;
+use Laminas\Mvc\Exception\Reached_Final_Handler_Exception;
 use Laminas\Mvc\Exception\RuntimeException;
-use Laminas\Mvc\MvcEvent;
-use Laminas\Psr7Bridge\Psr7ServerRequest;
-use Laminas\Router\RouteMatch;
-use Laminas\Stratigility\Delegate\CallableDelegateDecorator;
-use Laminas\Stratigility\MiddlewarePipe;
-use Psr\Http\Message\ResponseInterface;
-use Psr\Http\Message\ServerRequestInterface;
-
+use Laminas\Mvc\Mvc_Event;
+use Laminas\Psr7Bridge\Psr7server_Request;
+use Laminas\Router\Route_Match;
+use Laminas\Stratigility\Delegate\Callable_Delegate_Decorator;
+use Laminas\Stratigility\Middleware_Pipe;
+use Psr\Http\Message\Response_Interface;
+use Psr\Http\Message\Server_Request_Interface;
 use function sprintf;
-
 /**
  * @internal don't use this in your codebase, or else \@ocramius will hunt you
  *     down. This is just an internal hack to make middleware trigger
@@ -30,77 +27,52 @@ use function sprintf;
  *     attached to the \@see \Laminas\Stdlib\DispatchableInterface identifier to
  *     reach their listeners on any attached \@see \Laminas\EventManager\SharedEventManagerInterface
  */
-final class MiddlewareController extends AbstractController
+final class Middleware_Controller extends Abstract_Controller
 {
-    public function __construct(
-        private readonly MiddlewarePipe $pipe,
-        private readonly ResponseInterface $responsePrototype,
-        EventManagerInterface $eventManager,
-        MvcEvent $event
-    ) {
-        $this->eventIdentifier = self::class;
-
-        $this->setEventManager($eventManager);
-        $this->setEvent($event);
+    public function __construct(private readonly Middleware_Pipe $pipe, private readonly Response_Interface $response_prototype, Event_Manager_Interface $event_manager, Mvc_Event $event)
+    {
+        $this->event_identifier = self::class;
+        $this->set_event_manager($event_manager);
+        $this->set_event($event);
     }
-
     /**
      * {@inheritDoc}
      *
      * @throws RuntimeException
      */
-    public function onDispatch(MvcEvent $e)
+    public function on_dispatch(Mvc_Event $e)
     {
-        $routeMatch  = $e->getRouteMatch();
-        $psr7Request = $this->populateRequestParametersFromRoute(
-            $this->loadRequest()->withAttribute(RouteMatch::class, $routeMatch),
-            $routeMatch
-        );
-
-        $result = $this->pipe->process($psr7Request, new CallableDelegateDecorator(
-            static function (): never {
-                throw ReachedFinalHandlerException::create();
-            },
-            $this->responsePrototype
-        ));
-
-        $e->setResult($result);
-
+        $route_match = $e->get_route_match();
+        $psr7Request = $this->populate_request_parameters_from_route($this->load_request()->with_attribute(Route_Match::class, $route_match), $route_match);
+        $result = $this->pipe->process($psr7Request, new Callable_Delegate_Decorator(static function (): never {
+            throw Reached_Final_Handler_Exception::create();
+        }, $this->response_prototype));
+        $e->set_result($result);
         return $result;
     }
-
     /**
      * @return ServerRequest
      * @throws RuntimeException
      */
-    private function loadRequest()
+    private function load_request()
     {
         $request = $this->request;
-
-        if (! $request instanceof Request) {
-            throw new RuntimeException(sprintf(
-                'Expected request to be a %s, %s given',
-                Request::class,
-                $request::class
-            ));
+        if (!$request instanceof Request) {
+            throw new RuntimeException(sprintf('Expected request to be a %s, %s given', Request::class, $request::class));
         }
-
-        return Psr7ServerRequest::fromLaminas($request);
+        return Psr7server_Request::from_laminas($request);
     }
-
     /**
      * @return ServerRequestInterface
      */
-    private function populateRequestParametersFromRoute(ServerRequestInterface $request, ?RouteMatch $routeMatch = null)
+    private function populate_request_parameters_from_route(Server_Request_Interface $request, ?Route_Match $route_match = null)
     {
-        if (! $routeMatch) {
+        if (!$route_match) {
             return $request;
         }
-
-        foreach ($routeMatch->getParams() as $key => $value) {
-            $request = $request->withAttribute($key, $value);
+        foreach ($route_match->get_params() as $key => $value) {
+            $request = $request->with_attribute($key, $value);
         }
-
         return $request;
     }
 }

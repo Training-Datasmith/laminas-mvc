@@ -1,15 +1,13 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 namespace Laminas\Mvc\Service;
 
 // phpcs:ignore
-use Interop\Container\ContainerInterface;
-use Laminas\Http\PhpEnvironment\Request as HttpRequest;
-use Laminas\ServiceManager\Factory\FactoryInterface;
-
-class RequestFactory implements FactoryInterface
+use Interop\Container\Container_Interface;
+use Laminas\Http\Php_Environment\Request as HttpRequest;
+use Laminas\Service_Manager\Factory\Factory_Interface;
+class Request_Factory implements Factory_Interface
 {
     /**
      * Create and return a request instance.
@@ -17,8 +15,8 @@ class RequestFactory implements FactoryInterface
      * @param  string $requestedName
      * @return HttpRequest
      */
-    public function __invoke(ContainerInterface $container, $requestedName, ?array $options = null)
+    public function __invoke(Container_Interface $container, $requested_name, ?array $options = null)
     {
-        return new HttpRequest();
+        return new Http_Request();
     }
 }

@@ -1,15 +1,13 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 namespace Laminas\Mvc\Service;
 
 // phpcs:ignore
-use Interop\Container\ContainerInterface;
-use Laminas\Mvc\View\Http\ViewManager as HttpViewManager;
-use Laminas\ServiceManager\Factory\FactoryInterface;
-
-class ViewManagerFactory implements FactoryInterface
+use Interop\Container\Container_Interface;
+use Laminas\Mvc\View\Http\View_Manager as HttpViewManager;
+use Laminas\Service_Manager\Factory\Factory_Interface;
+class View_Manager_Factory implements Factory_Interface
 {
     /**
      * Create and return a view manager.
@@ -17,7 +15,7 @@ class ViewManagerFactory implements FactoryInterface
      * @param  string $requestedName
      * @return HttpViewManager
      */
-    public function __invoke(ContainerInterface $container, $requestedName, ?array $options = null)
+    public function __invoke(Container_Interface $container, $requested_name, ?array $options = null)
     {
         return $container->get('HttpViewManager');
     }
